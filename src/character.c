@@ -22,8 +22,7 @@ Character* create_character(const char *name, const char *class_name) {
     new_char->health = 100;
     new_char->attack = 10;
     new_char->defense = 5;
-    new_char->sorte = 10; // Valor inicial para sorte
-    new_char->defesa = 5; // Valor inicial para defesa (mantendo a original)
+    new_char->sorte = 10;// Valor inicial para defesa (mantendo a original)
     new_char->level = 1;
     new_char->ouro = 100;
 
