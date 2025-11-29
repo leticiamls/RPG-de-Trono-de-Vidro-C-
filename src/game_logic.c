@@ -8,22 +8,22 @@
 // --- Lógica do Jogo ---
 
 void handle_narrative(const char *title, Character *player) {
-    printf("\n[NARRATIVA] Você está em %s.\n", title);
+    printf("\n[NARRATIVA] Voce esta em %s.\n", title);
     
     if (strcmp(title, "O Castelo de Vidro") == 0) {
-        printf("Você, a assassina mais temida de Adarlan, foi trazida da prisão nas minas de sal ao Castelo de Vidro para competir pelo título de Campeã do Rei.\n");
-        printf("Seu objetivo é sobreviver aos desafios, descobrir os segredos sombrios do castelo e finalmente se tornar assassina do rei, se livrando do seu fatídico destino nas minas de sal.\n");
+        printf("Voce, a assassina mais temida de Adarlan, foi trazida da prisao nas minas de sal ao Castelo de Vidro para competir pelo titulo de Campea do Rei.\n");
+        printf("Seu objetivo e sobreviver aos desafios, descobrir os segredos sombrios do castelo e finalmente se tornar assassina do rei, se livrando do seu fatidico destino nas minas de sal.\n");
     } else if (strcmp(title, "O Encontro com a Rainha") == 0) {
-        printf("A Rainha de Adarlan convoca você. Ela parece saber mais sobre você do que você gostaria.\n");
-        printf("Você ganha 10 pontos de vida por sua lealdade (temporária).\n");
+        printf("A Rainha de Adarlan convoca voce. Ela parece saber mais sobre voce do que voce gostaria.\n");
+        printf("Você ganha 10 pontos de vida por sua lealdade (temporaria).\n");
         player->health += 10;
-    } else if (strcmp(title, "A Revelação da Identidade") == 0) {
-        printf("Seu verdadeiro nome e poder são revelados. Você sente uma nova força.\n");
+    } else if (strcmp(title, "A Revelaçao da Identidade") == 0) {
+        printf("Seu verdadeiro nome e poder sao revelados. Voce sente uma nova força.\n");
         player->attack += 5;
         player->level++;
-        printf("Seu ataque aumentou para %d e você subiu para o Nível %d!\n", player->attack, player->level);
+        printf("Seu ataque aumentou para %d e voce subiu para o Nivel %d!\n", player->attack, player->level);
     } else {
-        printf("Um momento de reflexão e diálogo. O caminho à frente é incerto.\n");
+        printf("Um momento de reflexão e dialogo. O caminho a frente e incerto.\n");
     }
     
     display_character_stats(player);
@@ -44,7 +44,7 @@ void handle_combat(Character *player) {
         strcpy(enemy_name, "Criatura de Wyrd");
     }
     
-    printf("Você enfrenta um(a) %s (Vida: %d, Ataque: %d, Defesa: %d).\n", enemy_name, enemy_health, enemy_attack, enemy_defense);
+    printf("Voce enfrenta um(a) %s (Vida: %d, Ataque: %d, Defesa: %d).\n", enemy_name, enemy_health, enemy_attack, enemy_defense);
     
     while (player->health > 0 && enemy_health > 0) {
         int player_damage = player->attack - enemy_defense;
@@ -55,27 +55,27 @@ void handle_combat(Character *player) {
         
         // Turno do Jogador
         enemy_health -= player_damage;
-        printf("Você ataca! %s perde %d de vida. (Restante: %d)\n", enemy_name, player_damage, enemy_health > 0 ? enemy_health : 0);
+        printf("Voce ataca! %s perde %d de vida. (Restante: %d)\n", enemy_name, player_damage, enemy_health > 0 ? enemy_health : 0);
         
         if (enemy_health <= 0) {
-            printf("Você derrotou o(a) %s!\n", enemy_name);
+            printf("Voce derrotou o(a) %s!\n", enemy_name);
             player->health += 10; // Recompensa
-            printf("Você recupera 10 de vida. Vida atual: %d\n", player->health);
+            printf("Voce recupera 10 de vida. Vida atual: %d\n", player->health);
             return;
         }
         
         // Turno do Inimigo
         player->health -= enemy_damage;
-        printf("%s ataca! Você perde %d de vida. (Restante: %d)\n", enemy_name, enemy_damage, player->health > 0 ? player->health : 0);
+        printf("%s ataca! Voce perde %d de vida. (Restante: %d)\n", enemy_name, enemy_damage, player->health > 0 ? player->health : 0);
         
         if (player->health <= 0) {
-            printf("Você foi derrotado(a) por %s. Fim de Jogo.\n", enemy_name);
+            printf("Voce foi derrotado(a) por %s. Fim de Jogo.\n", enemy_name);
             exit(0); // Fim de jogo
         }
     }
 }
 
 void handle_minigame(Character *player, Deck *deck) {
-    printf("\n[MINI-GAME] Você precisa vencer um jogo de cartas para obter informações cruciais.\n");
+    printf("\n[MINI-GAME] Voce precisa vencer um jogo de cartas para obter informaçoes cruciais.\n");
     comecarJogoCorte(player, deck);
 }
