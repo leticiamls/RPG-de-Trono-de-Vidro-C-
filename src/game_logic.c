@@ -36,8 +36,7 @@ void handle_combat(Character *player) {
     char enemy_name[50];
     int enemy_health = 50 + (rand() % 20);
     int enemy_attack = 8 + (rand() % 5);
-    int enemy_defense = 3 + (rand() % 3);
-    
+    int enemy_defense = 3 + (rand() % 3);     
     if (strcmp(player->class_name, "Assassina") == 0) {
         strcpy(enemy_name, "Guarda Real");
     } else {
