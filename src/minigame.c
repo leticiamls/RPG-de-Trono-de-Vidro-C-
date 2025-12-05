@@ -1,184 +1,424 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include "../include/minigame.h"
 
-void comecarJogoCorte(Character *player, Deck *deck) {
-    if(deck->size < 2) {
-        printf("O baralho esta incompleto. Impossivel jogar.\n");
-        return;
+#include "minigame.h"
+
+// --- Funções de Lista (Runas) ---
+
+Runa* criar_runa(const char *simbolo) {
+    Runa *r = (Runa*) malloc(sizeof(Runa));
+    if (r == NULL) {
+        printf("Erro ao alocar memoria para runa.\n");
+        exit(1);
     }
-
-    int pot_favors = 0;
-    int player_ante = 25; 
-    int opponent_ante = 25;
-    int opponent_favors = 300;
-
-    printf("\n===============================================\n");
-    printf("== CELAENA vs NEHEMIA : o desafio dos segredos ==\n");
-    printf("=================================================\n");
-    printf("Celaena: Voce esta em um duelo de astucia contra a Princesa Nehemia. O premio e uma peca vital de **Informacao** para seu proximo desafio. Você não está apostando no segredo em si, mas sim no risco e na importância que aquele segredo representa no contexto da corte.\n");
-    printf("\n** REGRAS DA RODADA: **\n");
-    printf("* **1. Segredo Revelado:** Uma carta eh virada, definindo o Segredo da rodada (Guerra/Alianca/Profecia).\n");
-    printf("A carta virada (o Segredo) não é a carta de duelo, é o fator de influência da rodada. Ela define o tom:\n");
-    printf("Se o Segredo for de Guerra (Carta tipo Ataque): O risco é alto. Nehemia pode apostar alto, indicando que a informação é crucial para a guerra. Sua aposta agora tem um peso maior, pois está ligada à vida ou morte.\n");
-    printf("Se o Segredo for uma Aliança (Carta tipo Defesa): O risco pode ser menor ou mais focado em política. As apostas tendem a ser mais cautelosas, mas uma vitória pode significar o controle de uma aliança vital...\n");
-    printf("* **2. Apostas:** Nehemia aposta uma determinada quantidade de ouro. Voce deve **Cobrir**, **Aumentar (Blefe)** ou **Desistir**.\n");
-    printf("    -> Seu **Ataque (Intimidacao)** e seu poder de Blefe.\n");
-    printf("* **3. Duelo Final:** Se as apostas forem cobertas, a Habilidade e o Destino decidem o vencedor.\n");
-    printf("    -> O vencedor e decidido pela soma: (Valor da Carta) + (Seu Destino/Wyrd).\n");
-    printf("\n** ALTO RISCO:** Vencer garante a **Informacao Crucial**. Perder pode custar ouro e um **Debuff** (Desvantagem).\n");
-    printf("============================================\n");
- 
-printf("== O JOGO DA CORTE: BLEFE E SEGREDOS ==\n");
-    printf("Voce e seu oponente colocam um 'ante' inicial de %d Favores (Moedas de Prata) cada.\n", player_ante);
-
-    if (player->ouro < player_ante) {
-        printf("Voce nao tem Favores suficientes para o 'ante' inicial!\n");
-        return;
-    }
-
-    player->ouro -= player_ante;
-    opponent_favors -= opponent_ante;
-    pot_favors += player_ante + opponent_ante;
-
-    // --- LOOP DA RODADA DE BLEFE ---
-    printf("\n--- Revelacao do Segredo ---\n");
-
-    // Simula a primeira carta virada na mesa: o Segredo que influencia a aposta
-    Card *secret_card = draw_card(deck);
-    if (secret_card == NULL) {
-        printf("Erro ao revelar o Segredo da Corte.\n");
-        return;
-    }
-    
-    // Nomes temáticos baseados no 'type' da carta (reusando as constantes do minigame.h)
-    char secret_name[50];
-    if (secret_card->type == CARD_TYPE_ATAQUE) sprintf(secret_name, "Segredo de Guerra");
-    else if (secret_card->type == CARD_TYPE_DEFESA) sprintf(secret_name, "Alianca Politica");
-    else if (secret_card->type == CARD_TYPE_SORTE) sprintf(secret_name, "Profecia Antiga");
-    else sprintf(secret_name, "Segredo Menor");
-
-
-    printf("O Segredo Revelado e: **%s** (Valor: %d)\n", secret_name, secret_card->valor);
-
-    // Oponente faz aposta baseada no segredo e na sua Força (Intimidação)
-    int opponent_raise_amount = 40; 
-    if (secret_card->valor >= 5 && secret_card->type == CARD_TYPE_ATAQUE) {
-        // Oponente se sente forte por ser um Segredo de Guerra
-        opponent_raise_amount = 75 + (rand() % 40); 
-    } else {
-        opponent_raise_amount = 40 + (rand() % 30); 
-    }
-
-    printf("O Oponente (Conselheiro Real) APOSTA: %d ouro(s).\n", opponent_raise_amount);
-    int current_bet = opponent_raise_amount;
-
-    // O jogador deve decidir
-    int choice = 0;
-    int player_raise_amount = 0;
-
-    printf("\nSeus Favores: %d. Aposta de Poder Atual: %d.\n", player->ouro, pot_favors);
-    printf("Escolha sua acao:\n");
-    printf("1. Cobrir Aposta (%d Favores)\n", current_bet);
-    printf("2. Aumentar Aposta (Blefe)\n");
-    printf("3. Desistir (Perde a Honra)\n");
-    printf("Sua escolha: ");
-
-    // Simulação da entrada do usuário (em um jogo real, este seria o scanf)
-    // Para fins deste exemplo de código, vou assumir uma entrada do usuário para a escolha.
-    scanf("%d", &choice);
-
-    if (choice == 3) {
-        // Desistir
-        printf("\nVoce DESISTIU do Segredo. O Conselheiro vence e sua **Reputacao** e levemente afetada.\n");
-        player->sorte -= 1; 
-        free(secret_card);
-        display_character_stats(player);
-        return;
-    } else if (choice == 1) {
-        // Cobrir Aposta (Call)
-        if (player->ouro < current_bet) {
-             printf("Favores insuficientes! Desistindo automaticamente.\n");
-             free(secret_card);
-             display_character_stats(player);
-             return;
-        }
-        player->ouro -= current_bet;
-        // Aposta do oponente ja foi considerada no 'raise'
-        pot_favors += current_bet;
-        printf("Voce COBRE a aposta. O duelo continua...\n");
-        
-    } else if (choice == 2) {
-        // Aumentar Aposta (Raise/Blefe)
-        printf("Quanto Favores voce deseja aumentar (minimo %d)? ", current_bet + 1);
-        scanf("%d", &player_raise_amount);
-
-        if (player_raise_amount <= current_bet || player->ouro < player_raise_amount) {
-            printf("Aumento invalido ou Favores insuficientes. Cobrindo aposta em vez disso.\n");
-            player_raise_amount = current_bet;
-        }
-        
-        player->ouro -= player_raise_amount;
-        pot_favors += player_raise_amount;
-        printf("Voce AUMENTOU a aposta para %d Favores! (Usando sua Intimidacao: %d)\n", player_raise_amount, player->attack);
-        
-        // Simular a reacão do Oponente ao aumento do jogador (Blefe vs. Intimidação)
-        // Se o aumento for muito grande E o jogador tiver um 'attack' alto, o NPC pode desistir.
-        if (player_raise_amount > opponent_raise_amount * 2 && player->attack >= 15) {
-            printf("O Conselheiro, intimidado por sua Forca e Blefe, DESISTE! Voce ganha a Aposta de Poder.\n");
-            player->ouro += pot_favors;
-            player->attack += 1; // Recompensa por blefe de sucesso
-            free(secret_card);
-            display_character_stats(player);
-            return;
-        } else {
-            // Oponente cobre a aposta aumentada
-            int difference = player_raise_amount - opponent_raise_amount;
-            opponent_favors -= difference;
-            pot_favors += difference;
-            printf("O Conselheiro COBRE. Preparando para o Duelo de Destino...\n");
-        }
-    }
-
-    // --- 2. Fase de Duelo de Destino (Showdown) ---
-    printf("\n--- DUELO DE DESTINO (Wyrd) ---\n");
-    
-    Card *player_duel_card = draw_card(deck);
-    Card opponent_duel_card;
-    opponent_duel_card.valor = 1 + (rand() % 7);
-    int opponent_luck = 5; // Oponente tem um Destino fixo
-    
-    // O Destino é o fator principal (metade do 'luck' somado)
-    int final_player_score = player_duel_card->valor + (player->sorte / 2); 
-    int final_opponent_score = opponent_duel_card.valor + (opponent_luck / 2); 
-
-    printf("Sua Carta: %d (+%d de Destino) = **%d**\n", 
-           player_duel_card->valor, player->sorte / 2, final_player_score);
-    printf("Carta Oponente: %d (+%d de Destino) = **%d**\n", 
-           opponent_duel_card.valor, opponent_luck / 2, final_opponent_score);
-    
-    // --- 3. Resultado Final ---
-    if (final_player_score > final_opponent_score) {
-        printf("\n*** VITORIA! ***\n");
-        printf("Seu Destino foi mais forte. Voce ganhou %d Favores e uma Boa Sorte na proxima missao.\n", pot_favors);
-        player->ouro += pot_favors;
-        player->sorte += 2; // Recompensa por sorte
-    } else {
-        printf("\n*** DERROTA! ***\n");
-        printf("O Destino te traiu. Voce perdeu o Pote para o Conselheiro e sofre uma penalidade na **Defesa**.\n");
-        player->defesa -= 5; 
-    }
-
-    // Limpeza
-    free(secret_card);
-    free(player_duel_card);
-    
-    // Lógica de recriação do baralho
-    if (deck->size <= 1) {
-        printf("\nO baralho foi esgotado. Recriando cartas de Segredos...\n");
-        // Lógica para repopular o deck com novos Segredos e Tipos
-    }
-
-    display_character_stats(player);
+    strncpy(r->simbolo, simbolo, 19);
+    r->simbolo[19] = '\0';
+    r->ativada = 0;
+    r->prox = NULL;
+    return r;
 }
+
+Runa* anexar_runa(Runa *head, Runa *nova) {
+    if (!head) return nova;
+    Runa *aux = head;
+    while (aux->prox != NULL)
+        aux = aux->prox;
+    aux->prox = nova;
+    return head;
+}
+
+Runa* criar_baralho_runas() {
+    const char *runasBase[] = {"Luz", "Wryd", "Magia", "Trevas"};
+    const char *figuras[] = {"Lamina", "Coroa", "Dragao"};
+    char simbolo[20];
+    Runa *head = NULL;
+
+    // Cartas de 2 a 9
+    for (int i = 0; i < 4; i++) {
+        for (int v = 2; v <= 9; v++) { 
+            snprintf(simbolo, sizeof(simbolo), "%s%d", runasBase[i], v);
+            head = anexar_runa(head, criar_runa(simbolo));
+        }
+    }
+
+    // Cartas de Figura (Valem 10)
+    for (int i = 0; i < 4; i++) {
+        for (int f = 0; f < 3; f++) {
+            snprintf(simbolo, sizeof(simbolo), "%s-%s", runasBase[i], figuras[f]);
+            head = anexar_runa(head, criar_runa(simbolo));
+        }
+    }
+    
+    // Cartas Ás/Aelino (Valem 1/11)
+    for (int i = 0; i < 4; i++) {
+        snprintf(simbolo, sizeof(simbolo), "%s-AELINO", runasBase[i]);
+        head = anexar_runa(head, criar_runa(simbolo));
+    }
+
+    return head;
+}
+
+void liberar_baralho(Runa *head) {
+    Runa *current = head;
+    Runa *proximo;
+    while (current) {
+        proximo = current->prox;
+        free(current);
+        current = proximo;
+    }
+}
+
+// --- Funções de Inventário ---
+
+Conhecimento* criar_conhecimento(const char *nome) {
+    Conhecimento *c = (Conhecimento*) malloc(sizeof(Conhecimento));
+    if (c == NULL) {
+        printf("Erro ao alocar memoria para Conhecimento.\n");
+        exit(1);
+    }
+    strncpy(c->nome, nome, 49);
+    c->nome[49] = '\0';
+    c->adquirido = 1;
+    c->prox = NULL;
+    return c;
+}
+
+Conhecimento* adicionar_ao_inventario(Conhecimento *head, const char *nome_conhecimento) {
+    Conhecimento *novo = criar_conhecimento(nome_conhecimento);
+    novo->prox = head;
+    return novo; 
+}
+
+void liberar_inventario(Conhecimento *head) {
+    Conhecimento *current = head;
+    Conhecimento *proximo;
+    while (current) {
+        proximo = current->prox;
+        free(current);
+        current = proximo;
+    }
+}
+
+void imprimir_inventario(const Conhecimento *head) {
+    printf("\n" NEGRITO "======================== INVENTARIO DE CONHECIMENTO ========================\n" PADRAO);
+    if (head == NULL) {
+        printf("Nenhum conhecimento adquirido ainda.\n");
+    } else {
+        const Conhecimento *current = head;
+        int i = 1;
+        while (current) {
+            printf("%d. [ ADQUIRIDO ] %s\n", i, current->nome);
+            current = current->prox;
+            i++;
+        }
+    }
+    printf(NEGRITO "============================================================================\n" PADRAO);
+}
+
+
+// --- Funções de Lógica (Blackjack) ---
+
+int calcular_valor_runa(const Runa *runa) {
+    if (strstr(runa->simbolo, "Lamina") || strstr(runa->simbolo, "Coroa") || strstr(runa->simbolo, "Dragao")) {
+        return 10;
+    }
+    if (strstr(runa->simbolo, "AELINO")) {
+        return 11;
+    }
+    
+    size_t len = strlen(runa->simbolo);
+    if (len > 0 && runa->simbolo[len - 1] >= '0' && runa->simbolo[len - 1] <= '9') {
+        return runa->simbolo[len - 1] - '0';
+    }
+    return 0;
+}
+
+int calcular_pontuacao(const Runa *head) {
+    int pontuacao = 0;
+    int ases = 0;
+    const Runa *current = head;
+    
+    while (current) {
+        int valor = calcular_valor_runa(current);
+        if (valor == 11) {
+            ases++;
+        }
+        pontuacao += valor;
+        current = current->prox;
+    }
+
+    while (pontuacao > 21 && ases > 0) {
+        pontuacao -= 10;
+        ases--;
+    }
+
+    return pontuacao;
+}
+
+Runa* distribuir_carta(Runa **baralho) {
+    if (*baralho == NULL) return NULL;
+
+    int contagem = 0;
+    Runa *temp = *baralho;
+    while (temp != NULL) {
+        contagem++;
+        temp = temp->prox;
+    }
+
+    if (contagem == 0) return NULL;
+    int indice_aleatorio = rand() % contagem;
+
+    Runa *atual = *baralho;
+    Runa *anterior = NULL;
+
+    for (int i = 0; i < indice_aleatorio; i++) {
+        anterior = atual;
+        atual = atual->prox;
+    }
+
+    if (anterior == NULL) {
+        *baralho = atual->prox;
+    } else {
+        anterior->prox = atual->prox;
+    }
+
+    atual->prox = NULL;
+    atual->ativada = 1;
+    return atual;
+}
+
+void imprimir_mao(const char *nome, const Runa *mao, int ocultar_primeira, int pontuacao_revelada) {
+    printf("  %s: [", nome);
+    const Runa *current = mao;
+    int i = 0;
+
+    while (current) {
+        if (ocultar_primeira && i == 0) {
+            printf(NEGRITO "???" PADRAO);
+        } else {
+            if (strcmp(nome, "Elena") == 0) {
+                printf(COR_VERMELHA "%s" PADRAO, current->simbolo);
+            } else {
+                printf(COR_VERDE "%s" PADRAO, current->simbolo);
+            }
+        }
+        
+        current = current->prox;
+        if (current) {
+            printf(", ");
+        }
+        i++;
+    }
+    printf("]");
+
+    if (pontuacao_revelada) {
+        printf(" (Pontuacao: %d)\n", calcular_pontuacao(mao));
+    } else {
+        printf("\n");
+    }
+}
+
+int jogar_rodada(Runa **baralho, int num_rodada, int *vitorias_celaena, int *vitorias_npc) {
+    Runa *mao_celaena = NULL;
+    Runa *mao_npc = NULL;
+    int pontuacao_celaena;
+    int pontuacao_npc;
+    char acao;
+    int resultado = 0; // 1=Vitória Celaena, -1=Vitória NPC, 0=Empate
+
+    printf("\n" NEGRITO "--------------------------- | RODADA %d | ---------------------------\n" PADRAO, num_rodada);
+    printf("PLACAR: Celaena %d - %d Elena\n", *vitorias_celaena, *vitorias_npc);
+
+    // Distribuição inicial (2 cartas para cada)
+    mao_celaena = anexar_runa(mao_celaena, distribuir_carta(baralho));
+    mao_npc = anexar_runa(mao_npc, distribuir_carta(baralho));
+    mao_celaena = anexar_runa(mao_celaena, distribuir_carta(baralho));
+    mao_npc = anexar_runa(mao_npc, distribuir_carta(baralho));
+
+    if (!mao_celaena || !mao_npc) {
+        printf("Erro ao distribuir cartas iniciais. Fim de jogo.\n");
+        return 0;
+    }
+
+    printf("\n**Elena te entrega duas cartas do baralho de Oryonth. Sua Heranca Escondida:\n");
+    imprimir_mao("Celaena", mao_celaena, 0, 1);
+
+    printf("\n'Veja, Assassina. Esta e a face da Magia de Adarlan que eu controlo.'\n");
+    imprimir_mao("Elena", mao_npc, 1, 0);
+
+    // --- Turno de Celaena ---
+    do {
+        pontuacao_celaena = calcular_pontuacao(mao_celaena);
+
+        if (pontuacao_celaena > 21) {
+            printf(COR_VERMELHA NEGRITO "ESTOUROU! (%d) Voce ultrapassou 21. Elena Galathynius ri.\n" PADRAO, pontuacao_celaena);
+            resultado = -1;
+            break;
+        }
+        if (pontuacao_celaena == 21) {
+            printf(COR_VERDE NEGRITO "FOGO DE FAE (21)! Voce atingiu o maximo.\n" PADRAO);
+            break;
+        }
+
+        printf("\nSua pontuacao atual: %d. Deseja (H)it (Puxar Lamina) ou (S)tand (Esperar)? ", pontuacao_celaena);
+        if (scanf(" %c", &acao) != 1) {
+            while (getchar() != '\n');
+            continue;
+        }
+
+        if (acao == 'H' || acao == 'h') {
+            Runa *nova_carta = distribuir_carta(baralho);
+            if (nova_carta) {
+                mao_celaena = anexar_runa(mao_celaena, nova_carta);
+                printf("Voce puxa a lamina: %s\n", nova_carta->simbolo);
+                imprimir_mao("Celaena", mao_celaena, 0, 1);
+                imprimir_mao("Elena", mao_npc, 1, 0);
+            } else {
+                printf("Baralho acabou!\n");
+                break;
+            }
+        }
+    } while (acao == 'H' || acao == 'h');
+
+    if (resultado != 0) {
+        liberar_baralho(mao_celaena);
+        liberar_baralho(mao_npc);
+        return resultado;
+    }
+
+    // --- Turno da Rainha ---
+    printf("\n--- Turno da Rainha ---\n");
+    printf(NEGRITO "Elena revela sua carta oculta (Valg Oculto).\n" PADRAO);
+    imprimir_mao("Elena", mao_npc, 0, 1);
+
+    pontuacao_npc = calcular_pontuacao(mao_npc);
+
+    while (pontuacao_npc < 17) {
+        printf("Elena deve continuar Puxando...\n");
+        Runa *nova_carta = distribuir_carta(baralho);
+        if (nova_carta) {
+            mao_npc = anexar_runa(mao_npc, nova_carta);
+            printf("Elena recebeu: %s\n", nova_carta->simbolo);
+            imprimir_mao("Elena", mao_npc, 0, 1);
+        } else {
+            printf("Baralho acabou!\n");
+            break;
+        }
+        pontuacao_npc = calcular_pontuacao(mao_npc);
+    }
+    
+    if (pontuacao_npc >= 17 && pontuacao_npc <= 21) {
+        printf("Elena para com pontuacao: %d\n", pontuacao_npc);
+    }
+
+    // --- RESULTADO FINAL ---
+    printf("\n" NEGRITO "--- RESULTADO DA RODADA %d ---\n" PADRAO, num_rodada);
+    printf("Sua Pontuacao: %d\n", pontuacao_celaena);
+    printf("Pontuacao de Elena: %d\n", pontuacao_npc);
+
+    if (pontuacao_celaena > 21) {
+        resultado = -1;
+    } else if (pontuacao_npc > 21) {
+        printf(COR_VERDE NEGRITO "VITORIA! Elena Estourou! (%d)\n" PADRAO, pontuacao_npc);
+        resultado = 1;
+    } else if (pontuacao_celaena > pontuacao_npc) {
+        printf(COR_VERDE NEGRITO "VITORIA! Sua pontuacao e maior.\n" PADRAO);
+        resultado = 1;
+    } else if (pontuacao_celaena < pontuacao_npc) {
+        printf(COR_VERMELHA NEGRITO "DERROTA. Sua pontuacao e menor.\n" PADRAO);
+        resultado = -1;
+    } else {
+        printf("EMPATE (Push)! O destino nao foi decidido.\n");
+        resultado = 0;
+    }
+
+    liberar_baralho(mao_celaena);
+    liberar_baralho(mao_npc);
+    
+    return resultado;
+}
+
+
+// --- Função Principal do Jogo (Duelo de Três) ---
+void blackjack() {
+    srand(time(NULL));
+    int vitorias_celaena = 0;
+    int vitorias_npc = 0;
+    int rodada_atual = 1;
+    int resultado_rodada;
+    Runa *baralho_mestre = NULL;
+    
+    // Variável para o Inventário de Conhecimento
+    Conhecimento *inventario_celaena = NULL; 
+
+    printf("\n" NEGRITO "==== Duelo de Simbolos (Trono de Vidro) ====\n" PADRAO);
+
+    // Introdução Narrativa
+    printf("**O ar nas catacumbas cheira a poeira e mofo. Os passos de Celaena ecoam, tensos, ate ela encontrar Elena Galathynius, a primeira rainha de Adarlan. Para provar seu valor e herdar seu destino, Celaena deve vencer o jogo que Elena propoe: um duelo de chance, sabedoria e coragem. O premio e o Conhecimento das Chaves de Wyrd (essencial para a batalha final).\n\n");
+    
+    // Regras
+    printf(NEGRITO "============================== Regras do Jogo ==============================\n" PADRAO);
+    printf("1- O numero no final da carta determina seu valor (2-9). Figuras (Lamina, Coroa, Dragao) valem 10. Aelino (As) vale 1/11.\n");
+    printf("2- Voce deve puxar uma nova carta (Hit) com o objetivo de sua mao totalizar o mais proximo possivel de 21, sem ultrapassar.\n");
+    printf("3- Caso voce ultrapasse o valor (BUST), voce automaticamente perde a rodada.\n");
+    printf("4- Caso voce atinja o valor exato (21), voce automaticamente ganha a rodada.\n");
+    printf(NEGRITO "5- Serao tres rodadas, quem ganhar a maior quantidade de rodadas (2) vence o duelo.\n\n" PADRAO);
+    printf(NEGRITO "==========================================================================\n" PADRAO);
+
+    // Loop do Melhor de Três
+    while (vitorias_celaena < 2 && vitorias_npc < 2) {
+        // Cria um novo baralho para cada duelo (opcional, mas mais justo)
+        liberar_baralho(baralho_mestre);
+        baralho_mestre = criar_baralho_runas();
+
+        resultado_rodada = jogar_rodada(&baralho_mestre, rodada_atual, &vitorias_celaena, &vitorias_npc);
+
+        if (resultado_rodada == 1) {
+            vitorias_celaena++;
+        } else if (resultado_rodada == -1) {
+            vitorias_npc++;
+        }
+        
+        if (vitorias_celaena < 2 && vitorias_npc < 2) {
+            char continuar;
+            printf("\nPLACAR ATUAL: Celaena %d - %d Elena.\n", vitorias_celaena, vitorias_npc);
+            printf("Pressione 'C' para continuar para a proxima rodada... ");
+            if (scanf(" %c", &continuar) != 1) {
+                while (getchar() != '\n');
+            }
+            while (getchar() != '\n');
+        }
+
+        rodada_atual++;
+        if (rodada_atual > 3 && vitorias_celaena == vitorias_npc) {
+            printf("\n--- EMPATE NO MELHOR DE TRES! UMA RODADA DE DESEMPATE E NECESSARIA. ---\n");
+        }
+    }
+
+    // Fim do Jogo
+    printf("\n" NEGRITO "***************** FIM DO DUELO DE SIMBOLOS *****************\n" PADRAO);
+    printf("PLACAR FINAL: Celaena %d - %d Elena\n", vitorias_celaena, vitorias_npc);
+
+    if (vitorias_celaena > vitorias_npc) {
+        printf(COR_VERDE NEGRITO "\nVITORIA SUPREMA! Você venceu Elena!\n" PADRAO);
+        
+        // Adquirir o Conhecimento
+        inventario_celaena = adicionar_ao_inventario(inventario_celaena, "CHAVE DE WYRD: O Mapa Antigo");
+        inventario_celaena = adicionar_ao_inventario(inventario_celaena, "MAGIA FAE: Poder Desbloqueado");
+
+        imprimir_inventario(inventario_celaena);
+
+    } else {
+        printf(COR_VERMELHA NEGRITO "\nDERROTA. Elena ri friamente: 'Ainda nao e seu momento, Herdeira.'\n" PADRAO);
+    }
+    printf("\n*****************************************************************\n");
+
+    // Liberação final de memória
+    liberar_baralho(baralho_mestre);
+    liberar_inventario(inventario_celaena); 
+}
+
+// --- FunC'C#o Principal ---

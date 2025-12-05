@@ -76,5 +76,5 @@ void handle_combat(Character *player) {
 
 void handle_minigame(Character *player, Deck *deck) {
     printf("\n[MINI-GAME] Voce precisa vencer um jogo de cartas para obter informaçoes cruciais.\n");
-    comecarJogoCorte(player, deck);
+    blackjack(player, deck);
 }
