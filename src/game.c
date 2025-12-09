@@ -90,8 +90,8 @@ static void setup_progression_queue() {
     
     // Fila de eventos baseada na narrativa de Trono de Vidro (simplificada)
     enqueue_chapter(g_progression_queue, "O Castelo de Vidro", 0); // Narrativa
+    enqueue_chapter(g_progression_queue, "Treinamento na Arena", CHAPTER_TYPE_TRAINING); // NOVO CAPÍTULO
     enqueue_chapter(g_progression_queue, "O Desafio do Campeao", 1); // Combate
-    enqueue_chapter(g_progression_queue, "O Encontro com a Rainha", 0); // Narrativa
     enqueue_chapter(g_progression_queue, "Celaena vs. Nehemia", 2); // Mini-Game
     enqueue_chapter(g_progression_queue, "A Revelação da Identidade", 0); // Narrativa
     enqueue_chapter(g_progression_queue, "Confronto Final", 1); // Combate
@@ -105,22 +105,24 @@ void run_game_loop() {
         current_chapter = dequeue_chapter(g_progression_queue);
         
         printf("\n--- Capítulo: %s ---\n", current_chapter->title);
-        
-        switch (current_chapter->type) {
-            case 0: // Narrativa
-                handle_narrative(current_chapter->title, g_player);
-                break;
-            case 1: // Combate
-                handle_combat(g_player);
-                break;
-            case 2: // Mini-Game
-                handle_minigame(g_player, g_minigame_deck);
-                break;
-            default:
-                printf("Tipo de capitulo desconhecido.\n");
-                break;
-        }
 
+    switch (current_chapter->type) {
+        case 0: // Narrativa
+            handle_narrative(current_chapter->title, g_player);
+            break;
+        case 1: // Combate
+            handle_combat(g_player);
+            break;
+        case 2: // Mini-Game
+            handle_minigame(g_player, g_minigame_deck);
+            break;
+        case CHAPTER_TYPE_TRAINING: // NOVO CASE
+            handle_training(g_player);
+            break;
+        default:
+            printf("Tipo de capitulo desconhecido.\n");
+            break;
+    }
         // Salvar o jogo após cada capítulo
         save_game(g_player);
         

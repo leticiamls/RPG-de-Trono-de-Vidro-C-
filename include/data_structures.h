@@ -1,5 +1,6 @@
 #ifndef DATA_STRUCTURES_H
 #define DATA_STRUCTURES_H
+#define CHAPTER_TYPE_TRAINING 3
 
 // Constantes para tipos de carta
 #define CYN "\e[0;36m"
