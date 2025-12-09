@@ -14,7 +14,6 @@ Queue *g_progression_queue = NULL;
 Runa *g_minigame_deck = NULL;
 
 // Protótipos de funções internas
-static void setup_new_game();
 static void load_or_new_game();
 static void setup_progression_queue();
 
@@ -33,56 +32,31 @@ int initialize_game() {
 }
 
 static void load_or_new_game() {
-    int choice;
+    int choice = 0;
     printf("Deseja carregar um jogo salvo (1) ou iniciar um novo jogo (2)? ");
     if (scanf("%d", &choice) != 1) {
-        // Limpa o buffer de entrada em caso de erro
         while (getchar() != '\n');
-        choice = 2; // Assume novo jogo em caso de entrada inválida
+        choice = 2;
     }
-    
+
     if (choice == 1) {
         g_player = load_game();
         if (g_player == NULL) {
             printf("Nenhum jogo salvo encontrado. Iniciando novo jogo...\n");
-            setup_new_game();
+            choice = 2;
         } else {
             printf("Jogo carregado com sucesso!\n");
-            display_character_stats(g_player);
         }
-    } else {
-        setup_new_game();
-    }
-}
-
-static void setup_new_game() {
-    char name[MAX_NAME_LENGTH];
-    int class_choice;
-
-    printf("\n--- Novo Jogo ---\n");
-    printf("Digite o nome do seu personagem: ");
-    if (scanf("%s", name) != 1) {
-        strcpy(name, "Aelin");
     }
 
-    printf("Escolha sua classe:\n");
-    printf("1. Assassina (Foco em Ataque)\n");
-    printf("2. Guerreiro (Foco em Defesa)\n");
-    printf("Escolha (1 ou 2): ");
-    if (scanf("%d", &class_choice) != 1 || (class_choice != 1 && class_choice != 2)) {
-        class_choice = 1; // Padrão para Assassina
+    if (choice == 2 || g_player == NULL) { 
+        printf("Iniciando novo jogo (Celaena Sardothien)...\n");
+        g_player = create_character();
+        if (g_player == NULL) {
+            fprintf(stderr, "Erro critico: Falha ao criar personagem.\n");
+            exit(1);
+        }
     }
-
-    if (class_choice == 1) {
-        g_player = create_character(name, "Assassina");
-        g_player->attack += 5; // Bônus de classe
-    } else {
-        g_player = create_character(name, "Guerreiro");
-        g_player->defense += 5; // Bônus de classe
-    }
-    
-    printf("\nPersonagem criado:\n");
-    display_character_stats(g_player);
 }
 
 static void setup_progression_queue() {

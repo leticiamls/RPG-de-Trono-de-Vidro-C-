@@ -9,7 +9,6 @@
 
 void handle_narrative(const char *title, Character *player) {
     printf("\n[NARRATIVA] Voce esta em %s.\n", title);
-    
     if (strcmp(title, "O Castelo de Vidro") == 0) {
         printf("Voce, a assassina mais temida de Adarlan, foi trazida da prisao nas minas de sal ao Castelo de Vidro para competir pelo titulo de Campea do Rei.\n");
         printf("Seu objetivo e sobreviver aos desafios, descobrir os segredos sombrios do castelo e finalmente se tornar assassina do rei, se livrando do seu fatidico destino nas minas de sal.\n");
@@ -31,43 +30,44 @@ void handle_narrative(const char *title, Character *player) {
 
 void handle_training(Character *player) {
     int choice;
-    printf("\n==================================================\n");
-    printf("== TREINAMENTO: O OLHAR VIGILANTE DE CHAOL WESTFALL ==\n");
-    printf("==================================================\n");
+    printf("\n=================================================\n");
+    printf("========= TREINAMENTO PARA O CAMPEONATO =========\n");
+    printf("=================================================\n");
 
-    printf("O Capitão da Guarda Real, Chaol Westfall, observa você na arena de treinamento. Seus olhos não demonstram emoção, mas a pressão de seu olhar é quase palpável. Ele não está aqui para ser seu amigo, mas para garantir que você esteja apta para a competição do Rei.\n");
+    printf("**O Capitao da Guarda Real, Chaol Westfall, observa voce na arena de treinamento. Seus olhos nao demonstram emocao, mas a pressao de seu olhar e quase palpavel. Ele nao esta aqui para ser seu amigo, mas para garantir que voce esteja apta para a competicao do Rei.\n");
 
-    printf("\n\"Assassina,\" ele diz, a voz grave ecoando no silêncio da arena. \"A competição não perdoa fraquezas. Você tem um tempo limitado. Escolha um foco. Onde está sua maior necessidade?\"\n");
+    printf("\n%sChaol:%s 'Lilian,' ele diz, a voz grave ecoando no silencio da arena. 'A competicao nao perdoa fraquezas. Voce tem um tempo limitado. Escolha um foco. Onde esta sua maior necessidade?'\n", CYN, PADRAO);
 
-    printf("\nVocê sabe que cada escolha terá um custo. O foco total em uma área significa negligenciar as outras, mas o tempo é curto.\n");
+    printf("\n'Voce sabe que cada escolha tera um custo. O foco total em uma area significa negligenciar as outras, mas o tempo e curto.'\n");
 
     printf("\n** ESCOLHA SEU FOCO DE TREINAMENTO: **\n");
-    printf("1. Treino de Ataque: Foco em Golpes Fatais e Intimidação (Aumenta o poder de Ataque)\n");
-    printf("2. Treino de Defesa: Foco em Bloqueios e Resistência (Aumenta o poder de Defesa)\n");
-    printf("3. Treino de Agilidade: Foco em Esquiva e Sorte (Aumenta a Sorte/Esquiva)\n");
+    printf("1. Treinar Arco e Flecha: Foco em Precisao e Sorte (+3 ataque | +5 sorte)\n");
+    printf("2. Treinar Lutas Corporais: Foco em Bloqueios e Resistencia (+5 defesa | +3 forca)\n");
+    printf("3. Treinar Luta de Espada: Foco em Golpes Fatais e Intimidacao (+5 ataque | +3 defesa)\n");
     printf("Sua escolha: ");
     
     if (scanf("%d", &choice) != 1) {
-        // Lidar com entrada inválida
         while (getchar() != '\n');
-        choice = 1; // Padrão para Ataque
     }
 
     switch (choice) {
     case 1:
-        player->attack += 3;
+        player->attack += 3; 
+        player->sorte += 5;
         printf("\nChaol acena com a cabeça. \"Bom. A melhor defesa é um ataque que não pode ser parado.\" Você passa as horas seguintes praticando sequências de golpes com força total. Seu corpo dói, mas seu ataque está mais afiado.\n");
-        printf("Seu poder de ataque aumentou para %d.\n", player->attack);
+        printf("Seu poder de ataque aumentou para %d. E sua sorte aumentou para %d\n", player->attack, player->sorte);
         break;
     case 2:
-        player->defense += 3;
+        player->defesa += 3; 
+        player->forca += 5;
         printf("\n\"Defesa? Uma escolha sensata para quem não confia em ninguém,\" Chaol murmura. Você passa o tempo treinando com escudos pesados e armaduras, aprendendo a absorver e desviar o impacto. Sua resistência é notável.\n");
-        printf("Seu poder de defesa aumentou para %d.\n", player->defense);
+        printf("Seu poder de defesa aumentou para %d.\n", player->defesa, player->forca);
         break;
     case 3:
-        player->sorte += 3;
+        player->attack += 3; 
+        player->defesa += 5;
         printf("\nChaol franze a testa. \"Sorte? Não confio nela. Mas a agilidade pode salvar sua vida.\" Você treina movimentos evasivos e a leitura rápida de intenções. Seu instinto está mais aguçado.\n");
-        printf("Seu atributo Sorte/Esquiva aumentou para %d.\n", player->sorte);
+        printf("Seu atributo Sorte/Esquiva aumentou para %d.\n", player->attack, player->defesa);
         break;
     default:
         printf("\nVocê hesita. Chaol apenas suspira e se afasta. \"Perdeu seu tempo, Assassina. A indecisão é a morte.\" Você não ganha bônus.\n");
@@ -97,7 +97,7 @@ void handle_combat(Character *player) {
         int player_damage = player->attack - enemy_defense;
         if (player_damage < 1) player_damage = 1;
         
-        int enemy_damage = enemy_attack - player->defense;
+        int enemy_damage = enemy_attack - player->defesa;
         if (enemy_damage < 1) enemy_damage = 1;
         
         // Turno do Jogador
