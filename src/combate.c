@@ -87,11 +87,11 @@ int iniciar_batalha(Character* player, Character* enemy) {
         // ---------------- TURNO DO JOGADOR ----------------
         if(atual == player) {
             if (acao == 0) { 
-                printf(BLUE "\nÉ seu turno! Escolha sua ação:\n" RESET);
+                printf(BLUE "\nE seu turno! Escolha sua açao:\n" RESET);
                 printf("1 - Atacar Leve\n");
                 printf("2 - Defender\n");
                 printf("3 - Esquivar\n");
-                printf("4 - Inventário (Usar itens)\n");
+                printf("4 - Inventario (Usar itens)\n");
                 
                 int escolha;
                 int inputValido = 0;
@@ -119,12 +119,12 @@ int iniciar_batalha(Character* player, Character* enemy) {
             
             // --- MENSAGENS DE IMPACTO ---
             if(acao == LEVE) {
-                printf(RED "\n>>> O INIMIGO AVANÇA RÁPIDO! <<<\n" RESET);
+                printf(RED "\n>>> O INIMIGO AVANÇA RAPIDO! <<<\n" RESET);
             } else {
                 printf(RED "\n>>> CUIDADO! %s CARREGA UM ATAQUE PESADO! <<<\n" RESET, enemy->name);
             }
 
-            printf(BLUE "Como você reage?\n" RESET);
+            printf(BLUE "Como voce reage?\n" RESET);
             printf("1 - Atacar Leve (Troca de dano)\n");
             printf("2 - Defender\n");
             printf("3 - Esquivar\n");
@@ -163,13 +163,13 @@ int iniciar_batalha(Character* player, Character* enemy) {
             printf(GREEN "%s esquivou perfeitamente e CONTRA-ATACA!\n" RESET, inimigo->name);
             int contra = calcularDano(inimigo->attack, 1.10f);
             atual->health -= contra;
-            printf(RED "%s recebeu %d de dano crítico!\n" RESET, atual->name, contra);
+            printf(RED "%s recebeu %d de dano critico!\n" RESET, atual->name, contra);
         }
         else if(acaoInimigo == PESADO && acao == ESQUIVAR){
             printf(GREEN "%s esquivou perfeitamente e CONTRA-ATACA!\n" RESET, atual->name);
             int contra = calcularDano(atual->attack, 1.10f);
             inimigo->health -= contra;
-            printf(RED "%s recebeu %d de dano crítico!\n" RESET, inimigo->name, contra);
+            printf(RED "%s recebeu %d de dano critico!\n" RESET, inimigo->name, contra);
         }
         else {
             // Dano Normal
@@ -231,7 +231,7 @@ int iniciar_batalha(Character* player, Character* enemy) {
     free_queue_combate(&turnos);
 
     if(player->health > 0){
-        printf(GREEN "\n>>> VITÓRIA! %s caiu. <<<\n" RESET, enemy->name);
+        printf(GREEN "\n>>> VITORIA! %s caiu. <<<\n" RESET, enemy->name);
         return 1; 
     }
     
