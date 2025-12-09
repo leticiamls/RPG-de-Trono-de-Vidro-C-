@@ -46,14 +46,14 @@ int use_item(Inventory *inv, const char *name, int *player_hp, int max_hp) {
         if (strcmp(inv->items[i].name, name) == 0) {
 
             if (inv->items[i].heal_amount <= 0) {
-                printf("Este item não pode ser usado agora.\n");
+                printf("Este item nao pode ser usado agora.\n");
                 return 0;
             }
 
             *player_hp += inv->items[i].heal_amount;
             if (*player_hp > max_hp) *player_hp = max_hp;
 
-            printf("Você usou %s e recuperou %d HP!\n",
+            printf("Voce usou %s e recuperou %d HP!\n",
                    name, inv->items[i].heal_amount);
 
             remove_item(inv, name, 1);
@@ -64,10 +64,10 @@ int use_item(Inventory *inv, const char *name, int *player_hp, int max_hp) {
 }
 
 void show_inventory(Inventory *inv) {
-    printf("\n========= INVENTÁRIO =========\n");
+    printf("\n========= INVENTARIO =========\n");
 
     if (inv->count == 0) {
-        printf("Inventário vazio.\n");
+        printf("Inventario vazio.\n");
         return;
     }
 
@@ -92,7 +92,7 @@ void open_inventory_menu(Inventory *inv, int *player_hp, int max_hp) {
         if (choice == 0) break;
 
         if (choice < 1 || choice > inv->count) {
-            printf("Opção inválida.\n");
+            printf("Opçao invalida.\n");
             continue;
         }
 
