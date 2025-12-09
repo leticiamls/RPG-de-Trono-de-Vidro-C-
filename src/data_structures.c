@@ -5,59 +5,115 @@
 
 // --- Implementação da Lista Encadeada (Deck/Baralho) ---
 
-Deck* create_deck() {
-    Deck *deck = (Deck *)malloc(sizeof(Deck));
-    if (deck == NULL) {
-        perror("Erro ao alocar memória para o baralho");
-        return NULL;
+Runa* criar_runa(const char *simbolo) {
+    Runa *r = (Runa*) malloc(sizeof(Runa));
+    if (r == NULL) {
+        printf("Erro ao alocar memoria para runa.\n");
+        exit(1);
     }
-    deck->head = NULL;
-    deck->size = 0;
-    return deck;
+    strncpy(r->simbolo, simbolo, 19);
+    r->simbolo[19] = '\0';
+    r->ativada = 0;
+    r->prox = NULL;
+    return r;
 }
 
-void add_card(Deck *deck, const char *name, int value) {
-    Card *new_card = (Card *)malloc(sizeof(Card));
-    if (new_card == NULL) {
-        perror("Erro ao alocar memória para a carta");
-        return;
-    }
-    
-    strncpy(new_card->name, name, 49);
-    new_card->name[49] = '\0';
-    new_card->valor = value;
-    
-    // Adiciona no início da lista (simplificação)
-    new_card->next = deck->head;
-    deck->head = new_card;
-    deck->size++;
+Runa* anexar_runa(Runa *head, Runa *nova) {
+    if (!head) return nova;
+    Runa *aux = head;
+    while (aux->prox != NULL)
+        aux = aux->prox;
+    aux->prox = nova;
+    return head;
 }
 
-Card* draw_card(Deck *deck) {
-    if (deck == NULL || deck->head == NULL) {
-        return NULL;
+Runa* criar_baralho_runas() {
+    const char *runasBase[] = {"Luz", "Wryd", "Magia", "Trevas"};
+    const char *figuras[] = {"Lamina", "Coroa", "Dragao"};
+    char simbolo[20];
+    Runa *head = NULL;
+
+    // Cartas de 2 a 9
+    for (int i = 0; i < 4; i++) {
+        for (int v = 2; v <= 9; v++) { 
+            snprintf(simbolo, sizeof(simbolo), "%s%d", runasBase[i], v);
+            head = anexar_runa(head, criar_runa(simbolo));
+        }
+    }
+
+    // Cartas de Figura (Valem 10)
+    for (int i = 0; i < 4; i++) {
+        for (int f = 0; f < 3; f++) {
+            snprintf(simbolo, sizeof(simbolo), "%s-%s", runasBase[i], figuras[f]);
+            head = anexar_runa(head, criar_runa(simbolo));
+        }
     }
     
-    // Remove do início da lista (simplificação)
-    Card *drawn_card = deck->head;
-    deck->head = deck->head->next;
-    deck->size--;
-    drawn_card->next = NULL; // Garante que a carta removida não aponte para o resto da lista
-    
-    return drawn_card;
+    // Cartas Ás/Aelino (Valem 1/11)
+    for (int i = 0; i < 4; i++) {
+        snprintf(simbolo, sizeof(simbolo), "%s-AELINO", runasBase[i]);
+        head = anexar_runa(head, criar_runa(simbolo));
+    }
+
+    return head;
 }
 
-void free_deck(Deck *deck) {
-    if (deck == NULL) return;
-    Card *current = deck->head;
-    Card *next;
-    while (current != NULL) {
-        next = current->next;
+void liberar_baralho(Runa *head) {
+    Runa *current = head;
+    Runa *proximo;
+    while (current) {
+        proximo = current->prox;
         free(current);
-        current = next;
+        current = proximo;
     }
-    free(deck);
 }
+
+// --- Implementação do inventário ---
+Conhecimento* criar_conhecimento(const char *nome) {
+    Conhecimento *c = (Conhecimento*) malloc(sizeof(Conhecimento));
+    if (c == NULL) {
+        printf("Erro ao alocar memoria para Conhecimento.\n");
+        exit(1);
+    }
+    strncpy(c->nome, nome, 49);
+    c->nome[49] = '\0';
+    c->adquirido = 1;
+    c->prox = NULL;
+    return c;
+}
+
+Conhecimento* adicionar_ao_inventario(Conhecimento *head, const char *nome_conhecimento) {
+    Conhecimento *novo = criar_conhecimento(nome_conhecimento);
+    novo->prox = head;
+    return novo; 
+}
+
+void liberar_inventario(Conhecimento *head) {
+    Conhecimento *current = head;
+    Conhecimento *proximo;
+    while (current) {
+        proximo = current->prox;
+        free(current);
+        current = proximo;
+    }
+}
+
+void imprimir_inventario(const Conhecimento *head) {
+    printf("\n" NEGRITO "======================== INVENTARIO DE CONHECIMENTO ========================\n" PADRAO);
+    if (head == NULL) {
+        printf("Nenhum conhecimento adquirido ainda.\n");
+    } else {
+        const Conhecimento *current = head;
+        int i = 1;
+        while (current) {
+            printf("%d. [ ADQUIRIDO ] %s\n", i, current->nome);
+            current = current->prox;
+            i++;
+        }
+    }
+    printf(NEGRITO "============================================================================\n" PADRAO);
+}
+
 
 // --- Implementação da Fila (Queue/Progressão) ---
 

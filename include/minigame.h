@@ -12,25 +12,9 @@
 #define NEGRITO "\033[1m"
 
 // --- Estrutura da Runa (Carta) ---
-typedef struct runa {
-    char simbolo[20];
-    int ativada;
-    struct runa *prox;
-} Runa;
-
-// --- Estrutura para o Inventário de Conhecimento ---
-typedef struct conhecimento {
-    char nome[50];
-    int adquirido;
-    struct conhecimento *prox;
-} Conhecimento;
 
 
-// --- Protótipos das Funções de Lista (Runas) ---
-Runa* criar_runa(const char *simbolo);
-Runa* anexar_runa(Runa *head, Runa *nova);
-Runa* criar_baralho_runas();
-void liberar_baralho(Runa *head);
+
 
 // --- Protótipos das Funções de Lógica (Blackjack) ---
 int calcular_valor_runa(const Runa *runa);

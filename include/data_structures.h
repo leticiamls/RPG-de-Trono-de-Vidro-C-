@@ -1,24 +1,32 @@
 #ifndef DATA_STRUCTURES_H
 #define DATA_STRUCTURES_H
 
-// Definição da estrutura para o Baralho (Lista Encadeada)
-typedef struct Card {
-    char name[50];
-    int valor;
-    int type;
-    struct Card *next;
-} Card;
+// Constantes para tipos de carta
+#define CYN "\e[0;36m"
+#define PADRAO "\x1b[0m"
+#define COR_VERMELHA "\033[31m"
+#define COR_VERDE "\033[32m"
+#define NEGRITO "\033[1m"
 
-typedef struct Deck {
-    Card *head;
-    int size;
-} Deck;
+// Definição da estrutura para o Baralho (Lista Encadeada)
+typedef struct runa {
+    char simbolo[20];
+    int ativada;
+    struct runa *prox;
+} Runa;
 
 // Funções para Lista Encadeada (Baralho)
-Deck* create_deck();
-void add_card(Deck *deck, const char *name, int value);
-Card* draw_card(Deck *deck);
-void free_deck(Deck *deck);
+Runa* criar_runa(const char *simbolo);
+Runa* anexar_runa(Runa *head, Runa *nova);
+Runa* criar_baralho_runas();
+void liberar_baralho(Runa *head);
+
+// --- Estrutura para o Inventário de Conhecimento ---
+typedef struct conhecimento {
+    char nome[50];
+    int adquirido;
+    struct conhecimento *prox;
+} Conhecimento;
 
 // Definição da estrutura para a Progressão (Fila)
 typedef struct Chapter {

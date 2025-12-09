@@ -11,7 +11,7 @@
 // Variáveis globais (simplificação para o projeto)
 Character *g_player = NULL;
 Queue *g_progression_queue = NULL;
-Deck *g_minigame_deck = NULL;
+Runa *g_minigame_deck = NULL;
 
 // Protótipos de funções internas
 static void setup_new_game();
@@ -28,13 +28,7 @@ int initialize_game() {
     setup_progression_queue();
 
     // 3. Configurar o baralho do mini-game
-    g_minigame_deck = create_deck();
-    // Adicionar cartas (Exemplo simples)
-    add_card(g_minigame_deck, "Amuleto de Wyrd", 5);
-    add_card(g_minigame_deck, "Chave de ferro", 3);
-    add_card(g_minigame_deck, "Shadowfire", 7);
-    add_card(g_minigame_deck, "Royal Decree", 1);
-    
+    g_minigame_deck = criar_baralho_runas();
     return 0;
 }
 
@@ -151,5 +145,5 @@ void run_game_loop() {
 void cleanup_game() {
     if (g_player) free_character(g_player);
     if (g_progression_queue) free_queue(g_progression_queue);
-    if (g_minigame_deck) free_deck(g_minigame_deck);
+    if (g_minigame_deck) liberar_baralho(g_minigame_deck);
 }
