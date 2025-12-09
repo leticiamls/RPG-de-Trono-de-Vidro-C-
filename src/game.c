@@ -7,19 +7,41 @@
 #include "../include/data_structures.h"
 #include "../include/file_handler.h"
 #include "../include/game_logic.h"
+#include "../include/npc.h"
+
 
 // Variáveis globais (simplificação para o projeto)
 Character *g_player = NULL;
 Queue *g_progression_queue = NULL;
 Runa *g_minigame_deck = NULL;
 
+//NPCs
+NPC *g_chaol = NULL;
+NPC *g_dorian = NULL;
+NPC *g_nehemia = NULL;
+
 // Protótipos de funções internas
 static void load_or_new_game();
 static void setup_progression_queue();
+static void initialize_npcs() {
+    // ATRIBUTOS BASE DE CADA NPC
+
+    // Chaol: Baixa amizade inicial (20), mas Alto Poder/Status (50)
+    g_chaol = create_npc("Chaol Westfall", 20, 50); 
+    
+    // Dorian: Amizade neutra/alta (40), Alto Poder/Status (70)
+    g_dorian = create_npc("Dorian Havilliard", 40, 70); 
+    
+    // Nehemia: Amizade alta (70), Empatia/Confiança alta (60)
+    g_nehemia = create_npc("Nehemia Ytger", 70, 60); 
+
+    // ... (verificação de erro) ...
+}
 
 int initialize_game() {
     srand(time(NULL)); // Inicializa o gerador de números aleatórios
-    
+
+    initialize_npcs();
     // 1. Carregar ou iniciar novo jogo
     load_or_new_game();
 
@@ -63,11 +85,13 @@ static void setup_progression_queue() {
     g_progression_queue = create_queue();
     
     // Fila de eventos baseada na narrativa de Trono de Vidro (simplificada)
+    enqueue_chapter(g_progression_queue, "Minas de Endovier", 0); // Narrativa
     enqueue_chapter(g_progression_queue, "O Castelo de Vidro", 0); // Narrativa
-    enqueue_chapter(g_progression_queue, "Treinamento na Arena", CHAPTER_TYPE_TRAINING); // NOVO CAPÍTULO
-    enqueue_chapter(g_progression_queue, "O Desafio do Campeao", 1); // Combate
-    enqueue_chapter(g_progression_queue, "Celaena vs. Nehemia", 2); // Mini-Game
-    enqueue_chapter(g_progression_queue, "A Revelação da Identidade", 0); // Narrativa
+    enqueue_chapter(g_progression_queue, "Treinamento para o Campeonato", 3); //Treinamento
+    enqueue_chapter(g_progression_queue, "Mortes Repentinas", 0); // Narrativa
+    enqueue_chapter(g_progression_queue, "Revelacoes de Elena", 2); // Mini-Game
+    enqueue_chapter(g_progression_queue, "Ameaca de Ridderak", 1); // Combate
+    enqueue_chapter(g_progression_queue, "The Last Dance", 0); // Narrativa
     enqueue_chapter(g_progression_queue, "Confronto Final", 1); // Combate
 }
 
@@ -78,7 +102,7 @@ void run_game_loop() {
     while (!is_queue_empty(g_progression_queue)) {
         current_chapter = dequeue_chapter(g_progression_queue);
         
-        printf("\n--- Capítulo: %s ---\n", current_chapter->title);
+        printf("\n--- Capitulo: %s ---\n", current_chapter->title);
 
     switch (current_chapter->type) {
         case 0: // Narrativa
@@ -90,7 +114,7 @@ void run_game_loop() {
         case 2: // Mini-Game
             handle_minigame(g_player, g_minigame_deck);
             break;
-        case CHAPTER_TYPE_TRAINING: // NOVO CASE
+        case 3: // Treinamento
             handle_training(g_player);
             break;
         default:
@@ -122,4 +146,9 @@ void cleanup_game() {
     if (g_player) free_character(g_player);
     if (g_progression_queue) free_queue(g_progression_queue);
     if (g_minigame_deck) liberar_baralho(g_minigame_deck);
+    
+    // Libera a memória alocada para os NPCs
+    if (g_chaol) free(g_chaol);
+    if (g_dorian) free(g_dorian);
+    if (g_nehemia) free(g_nehemia);
 }

@@ -7,7 +7,10 @@
 #define PADRAO "\x1b[0m"
 #define COR_VERMELHA "\033[31m"
 #define COR_VERDE "\033[32m"
+#define COR_AZUL "\033[0;34m"
 #define NEGRITO "\033[1m"
+#define COR_MAGENTA "\033[0;35m"
+#define COR_LARANJA "\033[0;33m"
 
 // Definição da estrutura para o Baralho (Lista Encadeada)
 typedef struct runa {
