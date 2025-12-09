@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../include/character.h"
+#include "../include/data_structures.h"
 
 Character* create_character() {
     Character *new_char = (Character *)malloc(sizeof(Character));
@@ -34,7 +35,7 @@ void display_character_stats(const Character *c) {
         printf("Personagem não existe.\n");
         return;
     }
-    printf("--- Status de Celaena ---\n");
+    printf("%s--- Status de Celaena ---%s\n", COR_LARANJA, PADRAO);
     printf("Nivel: %d\n", c->level);
     printf("Vida: %d\n", c->health);
     printf("Ataque: %d\n", c->attack);
@@ -42,7 +43,7 @@ void display_character_stats(const Character *c) {
     printf("Forca: %d\n", c->forca);
     printf("Sorte: %d\n", c->sorte);
     printf("Ouro: %d\n", c->ouro);
-    printf("----------------------\n");
+    printf("%s----------------------%s\n", COR_LARANJA, PADRAO);
 }
 
 void free_character(Character *c) {

@@ -31,14 +31,20 @@ void narrativa_endovier(Character *player) {
             break;
         case 2:
             printf("\nVoce se mantem em silencio, nao se sabe o limite da maldade dessas pessoas poderosas a sua frente, e nem esta em forma para tentar fugir.\n");
+            g_chaol->amizade_score += 10;
+            printf("%s+10 de amizade com Chaol Westfall.%s Sua amizade com Chaol agora e: %s%s%d/100%s\n\n", COR_VERDE, PADRAO, NEGRITO, COR_AZUL, g_chaol->amizade_score, PADRAO);
             break;
         case 3:
             printf("\nChaol, com somente um assobio, faz com que um guarda de porte medio saia imediatamente de sua posicao e corra em sua direcao, agarrando com forca seu braco e a jogando contra a parede.\n");
+            g_chaol->amizade_score -= 15;
+            printf("%s-15 de amizade com Chaol Westfall.%s Sua amizade com Chaol agora e: %s%s%d/100%s\n\n", COR_VERMELHA, PADRAO, NEGRITO, COR_AZUL, g_chaol->amizade_score, PADRAO);
             player->health -= 2;
             printf("\n%s(Sua tentativa de fuga foi mal sucedida)\n-2hp\nSua saude agora e: %s%s%d%s.\n\n",COR_VERMELHA, NEGRITO, COR_AZUL, player->health, PADRAO);
             break;
         default:
             printf("\nVoce se mantem em silencio, nao se sabe o limite da maldade dessas pessoas poderosas a sua frente, e nem esta em forma para tentar fugir.\n");
+            g_chaol->amizade_score += 10;
+            printf("%s+10 de amizade com Chaol Westfall.%s Sua amizade com Chaol agora e: %s%s%d/100%s\n\n", COR_VERMELHA, PADRAO, NEGRITO, COR_AZUL, g_chaol->amizade_score, PADRAO);
             break;
     }
 	printf("Chaol faz um sinal para os guardas, que abriram o caminho para outro homem, elegantemente vestido, com um sorriso debochado no rosto: Dorian Havilliard, o Principe Herdeiro.\n");
@@ -94,6 +100,7 @@ void handle_narrative(const char *title, Character *player) {
     }
     
     display_character_stats(player);
+    display_npc_stats();
 }
 
 void handle_training(Character *player) {
@@ -104,7 +111,7 @@ void handle_training(Character *player) {
 
     printf("**O Capitao da Guarda Real, Chaol Westfall, observa voce na arena de treinamento. Seus olhos nao demonstram emocao, mas a pressao de seu olhar e quase palpavel. Ele nao esta aqui para ser seu amigo, mas para garantir que voce esteja apta para a competicao do Rei.\n");
 
-    printf("\n%sChaol:%s 'Lilian,' ele diz, a voz grave ecoando no silencio da arena. 'A competicao nao perdoa fraquezas. Voce tem um tempo limitado. Escolha um foco. Onde esta sua maior necessidade?'\n", CYN, PADRAO);
+    printf("\n%sChaol:%s 'Celaena,' ele diz, a voz grave ecoando no silencio da arena. 'A competicao nao perdoa fraquezas. Voce tem um tempo limitado. Escolha um foco. Onde esta sua maior necessidade?'\n", CYN, PADRAO);
 
     printf("\n'Voce sabe que cada escolha tera um custo. O foco total em uma area significa negligenciar as outras, mas o tempo e curto.'\n");
 
