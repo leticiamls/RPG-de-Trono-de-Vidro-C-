@@ -238,7 +238,11 @@ void blackjack(Character *player, Runa *baralho_passado) {
     int vitorias_npc = 0;
     int rodada_atual = 1;
     int resultado_rodada;
-    Runa *working_deck = baralho_passado;
+
+    
+    Runa *working_deck = NULL;
+
+    working_deck = baralho_passado;
     
 
     printf("\n" NEGRITO "==== Duelo de Simbolos (Trono de Vidro) ====\n" PADRAO);
@@ -258,7 +262,6 @@ void blackjack(Character *player, Runa *baralho_passado) {
     // Loop do Melhor de Três
     while (vitorias_celaena < 2 && vitorias_npc < 2) {
         // Cria um novo baralho para cada duelo (opcional, mas mais justo)
-        liberar_baralho(working_deck);
         working_deck = criar_baralho_runas();
 
         resultado_rodada = jogar_rodada(&working_deck, rodada_atual, &vitorias_celaena, &vitorias_npc);
@@ -311,5 +314,3 @@ void blackjack(Character *player, Runa *baralho_passado) {
     // Liberação final de memória
     liberar_baralho(working_deck);
 }
-
-// --- FunC'C#o Principal ---

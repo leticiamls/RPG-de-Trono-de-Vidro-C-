@@ -2,7 +2,7 @@
 #define DATA_STRUCTURES_H
 #define CHAPTER_TYPE_TRAINING 3
 
-// Constantes para tipos de carta
+// Cores
 #define CYN "\e[0;36m"
 #define PADRAO "\x1b[0m"
 #define COR_VERMELHA "\033[31m"

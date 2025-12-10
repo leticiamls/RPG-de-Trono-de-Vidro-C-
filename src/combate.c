@@ -148,7 +148,7 @@ int iniciar_batalha(Character* player, Character* enemy) {
             
             // --- MENSAGENS DE IMPACTO ---
             if(acao == LEVE) {
-                printf(RED "\n>>> %s AVANÇA RAPIDO! <<<\n", enemy->name, RESET);
+                printf("\n%s>>> %s AVANCA RAPIDO! <<<%s\n", RED, enemy->name, RESET);
             } else {
                 printf(RED "\n>>> CUIDADO! %s CARREGA UM ATAQUE PESADO! <<<\n" RESET, enemy->name);
             }
