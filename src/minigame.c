@@ -2,16 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "../include/minigame.h"
+#include "../include/inventario.h"
+#include "../include/data_structures.h" 
+#include "../include/character.h"
+#include "../include/game_logic.h"
 
 #include "minigame.h"
-// --- Funções de Inventário ---
-
-
-
 
 // --- Funções de Lógica (Blackjack) ---
-
 int calcular_valor_runa(const Runa *runa) {
     if (strstr(runa->simbolo, "Lamina") || strstr(runa->simbolo, "Coroa") || strstr(runa->simbolo, "Dragao")) {
         return 10;
@@ -234,16 +232,14 @@ int jogar_rodada(Runa **baralho, int num_rodada, int *vitorias_celaena, int *vit
 
 
 // --- Função Principal do Jogo (Duelo de Três) ---
-void blackjack() {
+void blackjack(Character *player, Runa *baralho_passado) {
     srand(time(NULL));
     int vitorias_celaena = 0;
     int vitorias_npc = 0;
     int rodada_atual = 1;
     int resultado_rodada;
-    Runa *baralho_mestre = NULL;
+    Runa *working_deck = baralho_passado;
     
-    // Variável para o Inventário de Conhecimento
-    Conhecimento *inventario_celaena = NULL; 
 
     printf("\n" NEGRITO "==== Duelo de Simbolos (Trono de Vidro) ====\n" PADRAO);
 
@@ -262,10 +258,10 @@ void blackjack() {
     // Loop do Melhor de Três
     while (vitorias_celaena < 2 && vitorias_npc < 2) {
         // Cria um novo baralho para cada duelo (opcional, mas mais justo)
-        liberar_baralho(baralho_mestre);
-        baralho_mestre = criar_baralho_runas();
+        liberar_baralho(working_deck);
+        working_deck = criar_baralho_runas();
 
-        resultado_rodada = jogar_rodada(&baralho_mestre, rodada_atual, &vitorias_celaena, &vitorias_npc);
+        resultado_rodada = jogar_rodada(&working_deck, rodada_atual, &vitorias_celaena, &vitorias_npc);
 
         if (resultado_rodada == 1) {
             vitorias_celaena++;
@@ -296,11 +292,16 @@ void blackjack() {
     if (vitorias_celaena > vitorias_npc) {
         printf(COR_VERDE NEGRITO "\nVITORIA SUPREMA! Você venceu Elena!\n" PADRAO);
         
-        // Adquirir o Conhecimento
-        inventario_celaena = adicionar_ao_inventario(inventario_celaena, "CHAVE DE WYRD: O Mapa Antigo");
-        inventario_celaena = adicionar_ao_inventario(inventario_celaena, "MAGIA FAE: Poder Desbloqueado");
+        // --- SUBSTITUIÇÃO DA LÓGICA DE INVENTÁRIO (USANDO add_item) ---
+        
+        // Item 1: CHAVE DE WYRD (Não consumível, cura = 0)
+        add_item(&player->inventory, "CHAVE DE WYRD: O Mapa Antigo", 1, 0);
+        
+        // Item 2: MAGIA FAE (Não consumível, cura = 0)
+        add_item(&player->inventory, "MAGIA FAE: Poder Desbloqueado", 1, 0);
 
-        imprimir_inventario(inventario_celaena);
+        // Exibe o novo inventário (usando a função do novo módulo)
+        show_inventory(&player->inventory); // <-- USANDO O NOVO MÓDULO
 
     } else {
         printf(COR_VERMELHA NEGRITO "\nDERROTA. Elena ri friamente: 'Ainda nao e seu momento, Herdeira.'\n" PADRAO);
@@ -308,8 +309,7 @@ void blackjack() {
     printf("\n*****************************************************************\n");
 
     // Liberação final de memória
-    liberar_baralho(baralho_mestre);
-    liberar_inventario(inventario_celaena); 
+    liberar_baralho(working_deck);
 }
 
 // --- FunC'C#o Principal ---

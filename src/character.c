@@ -18,6 +18,9 @@ Character* create_character() {
     strncpy(new_char->class_name, "Assassina", MAX_CLASS_LEN - 1);
     new_char->class_name[MAX_CLASS_LEN - 1] = '\0';
 
+    // Inicializa o inventario
+    init_inventory(&new_char->inventory);
+
     // Atributos base
     new_char->health = 100;
     new_char->attack = 10;

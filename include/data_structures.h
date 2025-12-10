@@ -25,13 +25,6 @@ Runa* anexar_runa(Runa *head, Runa *nova);
 Runa* criar_baralho_runas();
 void liberar_baralho(Runa *head);
 
-// --- Estrutura para o Inventário de Conhecimento ---
-typedef struct conhecimento {
-    char nome[50];
-    int adquirido;
-    struct conhecimento *prox;
-} Conhecimento;
-
 // Definição da estrutura para a Progressão (Fila)
 typedef struct Chapter {
     char title[100];

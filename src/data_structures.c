@@ -68,53 +68,6 @@ void liberar_baralho(Runa *head) {
     }
 }
 
-// --- Implementação do inventário ---
-Conhecimento* criar_conhecimento(const char *nome) {
-    Conhecimento *c = (Conhecimento*) malloc(sizeof(Conhecimento));
-    if (c == NULL) {
-        printf("Erro ao alocar memoria para Conhecimento.\n");
-        exit(1);
-    }
-    strncpy(c->nome, nome, 49);
-    c->nome[49] = '\0';
-    c->adquirido = 1;
-    c->prox = NULL;
-    return c;
-}
-
-Conhecimento* adicionar_ao_inventario(Conhecimento *head, const char *nome_conhecimento) {
-    Conhecimento *novo = criar_conhecimento(nome_conhecimento);
-    novo->prox = head;
-    return novo; 
-}
-
-void liberar_inventario(Conhecimento *head) {
-    Conhecimento *current = head;
-    Conhecimento *proximo;
-    while (current) {
-        proximo = current->prox;
-        free(current);
-        current = proximo;
-    }
-}
-
-void imprimir_inventario(const Conhecimento *head) {
-    printf("\n" NEGRITO "======================== INVENTARIO DE CONHECIMENTO ========================\n" PADRAO);
-    if (head == NULL) {
-        printf("Nenhum conhecimento adquirido ainda.\n");
-    } else {
-        const Conhecimento *current = head;
-        int i = 1;
-        while (current) {
-            printf("%d. [ ADQUIRIDO ] %s\n", i, current->nome);
-            current = current->prox;
-            i++;
-        }
-    }
-    printf(NEGRITO "============================================================================\n" PADRAO);
-}
-
-
 // --- Implementação da Fila (Queue/Progressão) ---
 
 Queue* create_queue() {

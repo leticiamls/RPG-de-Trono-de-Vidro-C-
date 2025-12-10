@@ -1,6 +1,8 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
+#include "inventario.h"
+
 #define MAX_NAME_LEN 50
 #define MAX_CLASS_LEN 20
 
@@ -10,12 +12,14 @@ typedef struct {
 
     // Atributos Numéricos
     int health;
+    int max_health;
     int sorte;
     int defesa;
     int attack;
     int forca;
     int level;
     int ouro;
+    Inventory inventory;
 } Character;
 
 Character* create_character();

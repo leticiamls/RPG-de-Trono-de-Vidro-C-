@@ -3,6 +3,7 @@
 #include <time.h>
 #include <string.h>
 #include "../include/combate.h"
+#include "../include/inventario.h"
 
 // ======================== CORES ANSI ============================
 #define RED     "\033[1;31m"
@@ -90,6 +91,7 @@ int iniciar_batalha(Character* player, Character* enemy) {
                 printf("1 - Atacar Leve\n");
                 printf("2 - Defender\n");
                 printf("3 - Esquivar\n");
+                printf("4 - Inventário (Usar itens)\n");
                 
                 int escolha;
                 int inputValido = 0;
@@ -98,13 +100,15 @@ int iniciar_batalha(Character* player, Character* enemy) {
                     if (scanf("%d", &escolha) != 1) {
                         while(getchar() != '\n');
                     } else {
-                        if (escolha >= 1 && escolha <= 3) inputValido = 1; 
+                        if (escolha >= 1 && escolha <= 4) inputValido = 1; 
                     }
                 }
                 switch(escolha) {
                     case 1: acao = LEVE; break;
                     case 2: acao = DEFENDER; break;
                     case 3: acao = ESQUIVAR; break;
+                    case 4: open_inventory_menu(&player->inventory, &player->health, player->max_health);
+                    continue;
                 }
             }
             if(acao == LEVE) acaoInimigo = (rand() % 4) + 1; 

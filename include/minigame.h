@@ -3,6 +3,7 @@
 
 #include "character.h"
 #include "data_structures.h"
+#include "inventario.h"
 
 // Constantes para tipos de carta
 #define CYN "\e[0;36m"
@@ -22,13 +23,6 @@ int calcular_pontuacao(const Runa *head);
 Runa* distribuir_carta(Runa **baralho);
 void imprimir_mao(const char *nome, const Runa *mao, int ocultar_primeira, int pontuacao_revelada);
 int jogar_rodada(Runa **baralho, int num_rodada, int *vitorias_celaena, int *vitorias_npc);
-
-// --- Protótipos das Funções de Inventário ---
-Conhecimento* criar_conhecimento(const char *nome);
-Conhecimento* adicionar_ao_inventario(Conhecimento *head, const char *nome_conhecimento);
-void liberar_inventario(Conhecimento *head);
-void imprimir_inventario(const Conhecimento *head);
-
 
 // --- Função Principal do Jogo ---
 void blackjack();
