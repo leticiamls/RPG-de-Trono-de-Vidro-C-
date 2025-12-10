@@ -8,6 +8,7 @@
 #include "../include/file_handler.h"
 #include "../include/game_logic.h"
 #include "../include/npc.h"
+#include "../include/combate.h"
 
 
 // Variáveis globais (simplificação para o projeto)

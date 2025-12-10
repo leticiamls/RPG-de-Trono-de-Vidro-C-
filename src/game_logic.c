@@ -6,6 +6,7 @@
 #include "../include/minigame.h"
 #include "../include/character.h"
 #include "../include/npc.h"
+#include "../include/combate.h"
 
 // --- Lógica do Jogo ---
 
@@ -155,46 +156,64 @@ void handle_training(Character *player) {
 void handle_combat(Character *player) {
     printf("\n[COMBATE] Um desafio se apresenta!\n");
     
-    // Inimigo simples (exemplo)
-    char enemy_name[50];
-    int enemy_health = 50 + (rand() % 20);
-    int enemy_attack = 8 + (rand() % 5);
-    int enemy_defense = 3 + (rand() % 3);     
+    // --- 1. DEFINIÇÃO E CRIAÇÃO DO INIMIGO ---
+    
+    char *enemy_name;
+    int enemy_health;
+    int enemy_attack;
+    int enemy_defense;
+    
+    // Lógica básica para definir o inimigo (usando os stats antigos como base)
     if (strcmp(player->class_name, "Assassina") == 0) {
-        strcpy(enemy_name, "Guarda Real");
+        enemy_name = "Guarda Real";
+        enemy_health = 60 + (rand() % 20); // Stats aleatórios
+        enemy_attack = 10 + (rand() % 5);
+        enemy_defense = 5 + (rand() % 3);
     } else {
-        strcpy(enemy_name, "Criatura de Wyrd");
+        enemy_name = "Criatura de Wyrd";
+        enemy_health = 70 + (rand() % 30);
+        enemy_attack = 12 + (rand() % 5);
+        enemy_defense = 6 + (rand() % 3);
+    }
+
+    // Cria o inimigo usando a função externa
+    Character *enemy = create_enemy(enemy_name, enemy_health, enemy_attack, enemy_defense);
+    if (enemy == NULL) {
+        fprintf(stderr, "Erro critico: Falha ao criar inimigo.\n");
+        return;
     }
     
-    printf("Voce enfrenta um(a) %s (Vida: %d, Ataque: %d, Defesa: %d).\n", enemy_name, enemy_health, enemy_attack, enemy_defense);
+    int resultado_batalha;
     
-    while (player->health > 0 && enemy_health > 0) {
-        int player_damage = player->attack - enemy_defense;
-        if (player_damage < 1) player_damage = 1;
+    // --- 2. ORQUESTRAÇÃO DO COMBATE (Loop de Retry) ---
+    do {
+        // Restaura o HP do jogador para o valor inicial antes de CADA TENTATIVA
+        // (Nota: Em um RPG, você deve usar uma variável para o HP Máximo)
+        player->health = player->health; // Mantém a vida atual
+        enemy->health = enemy_health;    // Restaura o HP do inimigo para o máximo
         
-        int enemy_damage = enemy_attack - player->defesa;
-        if (enemy_damage < 1) enemy_damage = 1;
+        printf("\nVoce enfrenta o(a) %s! Prepare-se.\n", enemy->name);
+
+        // Chama a lógica de combate completa (implementada em src/combate.c)
+        resultado_batalha = iniciar_batalha(player, enemy); 
         
-        // Turno do Jogador
-        enemy_health -= player_damage;
-        printf("Voce ataca! %s perde %d de vida. (Restante: %d)\n", enemy_name, player_damage, enemy_health > 0 ? enemy_health : 0);
-        
-        if (enemy_health <= 0) {
-            printf("Voce derrotou o(a) %s!\n", enemy_name);
-            player->health += 10; // Recompensa
-            printf("Voce recupera 10 de vida. Vida atual: %d\n", player->health);
-            return;
+        if (resultado_batalha == 0) {
+            // Resultado 0: Desistir (Fim de Jogo)
+            free(enemy);
+            exit(0);
         }
         
-        // Turno do Inimigo
-        player->health -= enemy_damage;
-        printf("%s ataca! Voce perde %d de vida. (Restante: %d)\n", enemy_name, enemy_damage, player->health > 0 ? player->health : 0);
-        
-        if (player->health <= 0) {
-            printf("Voce foi derrotado(a) por %s. Fim de Jogo.\n", enemy_name);
-            exit(0); // Fim de jogo
-        }
+    } while (resultado_batalha == 2); // Resultado 2: Tentar Novamente (Retry)
+    
+    // --- 3. PÓS-BATALHA (Recompensa) ---
+    if (resultado_batalha == 1) {
+        printf("\n[SUCESSO] O desafio foi vencido!\n");
+        player->health += 10;
+        printf("Você recupera 10 de vida. Vida atual: %d\n", player->health);
     }
+    
+    // Libera a memória alocada para o inimigo temporário
+    free(enemy);
 }
 
 void handle_minigame(Character *player, Runa *runa) {

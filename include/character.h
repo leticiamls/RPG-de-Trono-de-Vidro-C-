@@ -19,6 +19,7 @@ typedef struct {
 } Character;
 
 Character* create_character();
+Character* create_enemy(char* name, int hp, int atk, int def);
 void display_character_stats(const Character *c);
 void free_character(Character *c);
 
