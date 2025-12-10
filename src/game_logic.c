@@ -15,34 +15,72 @@ void aplicar_magia_fae(Character *player) {
     if (player == NULL) return;
 
     const char *item_name = "MAGIA FAE: Poder Desbloqueado";
-    const float bonus_ataque = 0.30f;
-    const float bonus_defesa = 0.15f;
+    const float MULT_ATAQUE = 0.30f;
+    const float MULT_DEFESA = 0.15f;
+    
+    // Cálculo dos bônus em pontos inteiros
+    int bonus_ataque_pts = (int)(player->attack * MULT_ATAQUE);
+    int bonus_defesa_pts = (int)(player->defesa * MULT_DEFESA); // Usando player->defesa para calcular
 
-    // Itera sobre o inventário (array)
     for (int i = 0; i < player->inventory.count; i++) {
         Item *item = &player->inventory.items[i];
         
-        // Verifica se o item especial está presente
         if (strcmp(item->name, item_name) == 0) {
-            
-            // Verifica se o bônus ainda não foi aplicado (usando a 'quantity' como flag)
-            // Se a quantidade é 1, ele pode ser aplicado. Se for 0, já foi usado.
             if (item->quantity == 1) { 
                 
-                // Aplica o bônus
-                player->attack += bonus_ataque;
-                player->sorte += bonus_defesa;
+                // APLICAÇÃO CORRIGIDA
+                player->attack += bonus_ataque_pts;
+                player->defesa += bonus_defesa_pts; // <-- Aplicando à DEFESA, como pretendido (15%)
                 
-                // Marque como usado (reduz a quantidade)
                 item->quantity = 0; 
                 
                 printf("\n\033[1;32m[DESPERTAR DE PODER FAE]\033[0m %s ativado! \n", item_name);
-                printf("\033[1;32mStatus atual: ATK %d | DEFESA %d\033[0m\n", player->attack, player->sorte);
+                printf("\033[1;32mStatus atual: ATK +%d (%d) | DEFESA +%d (%d)\033[0m\n", 
+                       bonus_ataque_pts, player->attack, 
+                       bonus_defesa_pts, player->defesa);
                 return;
             }
-            // Se quantity == 0, o bônus já foi aplicado.
             return; 
         }
+    }
+}
+
+void aplicar_amuleto_ferro(Character *player, Character *enemy) {
+    if (player == NULL || enemy == NULL) return;
+
+    const char *item_name = "AMULETO: anulador de magia(voce bloqueara a magia inimiga, mas nao sera capaz de utilizar a sua)";
+    const float reducao_ataque_inimigo = 0.30f;
+    int amuleto_encontrado = 0;
+
+    // 1. Verificar se o Amuleto de Ferro está no inventario do jogador
+    for (int i = 0; i < player->inventory.count; i++) {
+        Item *item = &player->inventory.items[i];
+        
+        // Verifica se o Amuleto está presente e se a quantidade é maior que zero
+        if (strcmp(item->name, item_name) == 0 && item->quantity > 0) {
+            amuleto_encontrado = 1;
+            break; 
+        }
+    }
+
+    if (amuleto_encontrado) {
+        // 2. Aplicar a penalidade de 30% no ataque do inimigo
+        int dano_original = enemy->attack;
+        
+        // Calcula a nova penalidade, garantindo que o ataque minimo seja 1 (ou 0, dependendo da regra do jogo)
+        int reducao = (int)(dano_original * reducao_ataque_inimigo);
+        enemy->attack = dano_original - reducao;
+        
+        // Garante que o ataque nao fique negativo, se a logica permitir
+        if (enemy->attack < 0) {
+            enemy->attack = 0; 
+        }
+
+        printf("\n\033[1;36m[AMULETO DE FERRO ATIVO]\033[0m A presenca do ferro afeta o inimigo!");
+        printf("\nO ataque de %s foi reduzido em %d (30%%). ATK Inimigo atual: %d\n", 
+               enemy->name, reducao, enemy->attack);
+
+        // Nao há necessidade de uma flag de "uso" no Amuleto, pois ele é um item passivo/permanente.
     }
 }
 
@@ -108,6 +146,7 @@ void handle_combat(Character *player) {
     int enemy_attack;
     int enemy_defense;
     
+
     // Lógica básica para definir o inimigo (usando os stats antigos como base)
     if (strcmp(player->class_name, "Assassina") == 0) {
         enemy_name = "Ridderak";
@@ -123,6 +162,8 @@ void handle_combat(Character *player) {
         enemy_max_health = enemy_health;
     }
 
+    
+
     // --- PONTO DE APLICAÇÃO DO BÔNUS ---
     if (strcmp(enemy_name, "Cain") == 0 || strcmp(enemy_name, "Confronto Final") == 0) {
         // Checa e aplica o bônus antes de criar o inimigo final
@@ -136,6 +177,7 @@ void handle_combat(Character *player) {
         return;
     }
     
+    aplicar_amuleto_ferro(player, enemy);
     int resultado_batalha;
     
     // --- 2. ORQUESTRAÇÃO DO COMBATE (Loop de Retry) ---
