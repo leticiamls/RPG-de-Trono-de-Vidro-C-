@@ -7,8 +7,44 @@
 #include "../include/character.h"
 #include "../include/npc.h"
 #include "../include/combate.h"
+#include "../include/inventario.h"
 
 // --- Lógica do Jogo ---
+void aplicar_magia_fae(Character *player) {
+    if (player == NULL) return;
+
+    const char *item_name = "MAGIA FAE: Poder Desbloqueado";
+    const float bonus_ataque = 0.30f;
+    const float bonus_defesa = 0.15f;
+
+    // Itera sobre o inventário (array)
+    for (int i = 0; i < player->inventory.count; i++) {
+        Item *item = &player->inventory.items[i];
+        
+        // Verifica se o item especial está presente
+        if (strcmp(item->name, item_name) == 0) {
+            
+            // Verifica se o bônus ainda não foi aplicado (usando a 'quantity' como flag)
+            // Se a quantidade é 1, ele pode ser aplicado. Se for 0, já foi usado.
+            if (item->quantity == 1) { 
+                
+                // Aplica o bônus
+                player->attack += bonus_ataque;
+                player->sorte += bonus_defesa;
+                
+                // Marque como usado (reduz a quantidade)
+                item->quantity = 0; 
+                
+                printf("\n\033[1;32m[DESPERTAR DE PODER FAE]\033[0m %s ativado! \n", item_name);
+                printf("\033[1;32mStatus atual: ATK %d | DEFESA %d\033[0m\n", player->attack, player->sorte);
+                return;
+            }
+            // Se quantity == 0, o bônus já foi aplicado.
+            return; 
+        }
+    }
+}
+
 
 // --- Narrativas ---
 void narrativa_endovier(Character *player) {
@@ -153,6 +189,8 @@ void handle_training(Character *player) {
     display_character_stats(player);
 }
 
+extern void aplicar_magia_fae(Character *player);
+
 void handle_combat(Character *player) {
     printf("\n[COMBATE] Um desafio se apresenta!\n");
     
@@ -160,24 +198,33 @@ void handle_combat(Character *player) {
     
     char *enemy_name;
     int enemy_health;
+    int enemy_max_health;
     int enemy_attack;
     int enemy_defense;
     
     // Lógica básica para definir o inimigo (usando os stats antigos como base)
     if (strcmp(player->class_name, "Assassina") == 0) {
-        enemy_name = "Guarda Real";
+        enemy_name = "Ridderak";
         enemy_health = 60 + (rand() % 20); // Stats aleatórios
         enemy_attack = 10 + (rand() % 5);
         enemy_defense = 5 + (rand() % 3);
+        enemy_max_health = enemy_health;
     } else {
-        enemy_name = "Criatura de Wyrd";
+        enemy_name = "Cain";
         enemy_health = 70 + (rand() % 30);
         enemy_attack = 12 + (rand() % 5);
         enemy_defense = 6 + (rand() % 3);
+        enemy_max_health = enemy_health;
+    }
+
+    // --- PONTO DE APLICAÇÃO DO BÔNUS ---
+    if (strcmp(enemy_name, "Cain") == 0 || strcmp(enemy_name, "Confronto Final") == 0) {
+        // Checa e aplica o bônus antes de criar o inimigo final
+        aplicar_magia_fae(player); 
     }
 
     // Cria o inimigo usando a função externa
-    Character *enemy = create_enemy(enemy_name, enemy_health, enemy_attack, enemy_defense);
+    Character *enemy = create_enemy(enemy_name, enemy_health, enemy_attack, enemy_defense, enemy_max_health);
     if (enemy == NULL) {
         fprintf(stderr, "Erro critico: Falha ao criar inimigo.\n");
         return;

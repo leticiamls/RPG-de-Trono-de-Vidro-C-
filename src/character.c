@@ -29,11 +29,12 @@ Character* create_character() {
     new_char->sorte = 10;
     new_char->level = 1;
     new_char->ouro = 100;
+    new_char->max_health = 100;
 
     return new_char;
 }
 
-Character* create_enemy(char* name, int hp, int atk, int def) {
+Character* create_enemy(char* name, int hp, int atk, int def, int maxhp) {
     Character *enemy = (Character *)malloc(sizeof(Character));
     if (!enemy) return NULL;
     strncpy(enemy->name, name, MAX_NAME_LEN - 1);
@@ -41,6 +42,7 @@ Character* create_enemy(char* name, int hp, int atk, int def) {
     strncpy(enemy->class_name, "Inimigo", MAX_CLASS_LEN - 1);
     
     enemy->health = hp;
+    enemy->max_health = maxhp;
     enemy->attack = atk;
     enemy->defesa = def;
     enemy->forca = 5;
@@ -54,7 +56,7 @@ void display_character_stats(const Character *c) {
     }
     printf("%s--- Status de Celaena ---%s\n", COR_LARANJA, PADRAO);
     printf("Nivel: %d\n", c->level);
-    printf("Vida: %d\n", c->health);
+    printf("Vida: %d/%d\n", c->health, c->max_health);
     printf("Ataque: %d\n", c->attack);
     printf("Defesa: %d\n", c->defesa);
     printf("Forca: %d\n", c->forca);

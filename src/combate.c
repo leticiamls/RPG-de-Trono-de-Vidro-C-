@@ -18,6 +18,7 @@
 #define PESADO 2
 #define DEFENDER 3
 #define ESQUIVAR 4
+extern void aplicar_magia_fae(Character *player);
 
 // ====================== FUNÇÕES BÁSICAS ============================
 
@@ -107,11 +108,39 @@ int iniciar_batalha(Character* player, Character* enemy) {
                     case 1: acao = LEVE; break;
                     case 2: acao = DEFENDER; break;
                     case 3: acao = ESQUIVAR; break;
-                    case 4: open_inventory_menu(&player->inventory, &player->health, player->max_health);
-                    continue;
+                    case 4:{
+                            printf("HP %s: %d / %d\n", player->name, player->health, player->max_health); // <-- EXIBIÇÃO DE HP AQUI
+                            
+                            // open_inventory_menu agora tem apenas 1 argumento
+                            int item_index = open_inventory_menu(&player->inventory);
+                            if (item_index > 0) {
+                                // Obter o Item real
+                                Item *selected_item = &player->inventory.items[item_index - 1];
+
+                                if (selected_item->type == ITEM_TYPE_CONSUMABLE) {
+                                    // Aplicar a cura
+                                    player->health += selected_item->heal_amount;
+                                    if (player->health > player->max_health) player->health = player->max_health;
+                                    
+                                    // Remover o item
+                                    remove_item(&player->inventory, selected_item->name, 1); 
+                                    printf(GREEN "Você usou %s e se curou! HP atual: %d/%d\n" RESET, selected_item->name, player->health, player->max_health);
+                                    // O turno termina aqui
+                                    continue; 
+                                    
+                                } else if (selected_item->type == ITEM_TYPE_BUFF) {
+                                    // Aqui, o combate.c chama o módulo de Lógica de Jogo
+                                    aplicar_magia_fae(player); // <-- Chamada ao módulo externo (game_logic.c)
+                                    // O turno termina aqui
+                                    continue; 
+                                }
+                            }
+                            // Se saiu do menu (choice == 0), volta para o menu de combate.
+                            continue;
+                    }
                 }
-            }
             if(acao == LEVE) acaoInimigo = (rand() % 4) + 1; 
+            }
         }
         // ---------------- TURNO DO INIMIGO ----------------
         else {
@@ -119,7 +148,7 @@ int iniciar_batalha(Character* player, Character* enemy) {
             
             // --- MENSAGENS DE IMPACTO ---
             if(acao == LEVE) {
-                printf(RED "\n>>> O INIMIGO AVANÇA RAPIDO! <<<\n" RESET);
+                printf(RED "\n>>> %s AVANÇA RAPIDO! <<<\n", enemy->name, RESET);
             } else {
                 printf(RED "\n>>> CUIDADO! %s CARREGA UM ATAQUE PESADO! <<<\n" RESET, enemy->name);
             }

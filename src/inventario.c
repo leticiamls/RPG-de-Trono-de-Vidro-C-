@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <string.h>
-#include "inventario.h"
+#include "../include/inventario.h"
 
 void init_inventory(Inventory *inv) {
     inv->count = 0;
 }
 
-int add_item(Inventory *inv, const char *name, int qty, int heal_amount) {
+int add_item(Inventory *inv, const char *name, int qty, int heal_amount, int type) {
     for (int i = 0; i < inv->count; i++) {
         if (strcmp(inv->items[i].name, name) == 0) {
             inv->items[i].quantity += qty;
@@ -19,6 +19,7 @@ int add_item(Inventory *inv, const char *name, int qty, int heal_amount) {
     strncpy(inv->items[inv->count].name, name, MAX_ITEM_NAME);
     inv->items[inv->count].quantity = qty;
     inv->items[inv->count].heal_amount = heal_amount;
+    inv->items[inv->count].type = type;
     inv->count++;
 
     return 1;
@@ -41,26 +42,25 @@ int remove_item(Inventory *inv, const char *name, int qty) {
     return 0;
 }
 
-int use_item(Inventory *inv, const char *name, int *player_hp, int max_hp) {
+int use_item(Inventory *inv, const char *name) {
+    // 1. Procura o item
     for (int i = 0; i < inv->count; i++) {
         if (strcmp(inv->items[i].name, name) == 0) {
+            
+            // 2. Armazena o valor de cura/buff para retorno
+            int effect_value = inv->items[i].heal_amount;
+            int item_type = inv->items[i].type;
 
-            if (inv->items[i].heal_amount <= 0) {
-                printf("Este item nao pode ser usado agora.\n");
-                return 0;
+            // 3. Se for consumível, remove. Se for buff, apenas retorna o valor (depende da lógica)
+            // Para Buff/Fae, não faz nada com a quantidade aqui.
+            if (item_type == ITEM_TYPE_CONSUMABLE) {
+                 remove_item(inv, name, 1);
             }
-
-            *player_hp += inv->items[i].heal_amount;
-            if (*player_hp > max_hp) *player_hp = max_hp;
-
-            printf("Voce usou %s e recuperou %d HP!\n",
-                   name, inv->items[i].heal_amount);
-
-            remove_item(inv, name, 1);
-            return 1;
+            // 4. Retorna um código que o chamador (combate.c) interpretará
+            return effect_value; 
         }
     }
-    return 0;
+    return 0; // Item não encontrado
 }
 
 void show_inventory(Inventory *inv) {
@@ -80,24 +80,22 @@ void show_inventory(Inventory *inv) {
     }
 }
 
-void open_inventory_menu(Inventory *inv, int *player_hp, int max_hp) {
+int open_inventory_menu(Inventory *inv) { 
     int choice;
-
     while (1) {
         show_inventory(inv);
-        printf("\nHP atual: %d / %d\n", *player_hp, max_hp);
         printf("Escolha um item para usar (0 para sair): ");
-        scanf("%d", &choice);
-
-        if (choice == 0) break;
-
-        if (choice < 1 || choice > inv->count) {
-            printf("Opçao invalida.\n");
+        // Limpeza de buffer necessária (como recomendado anteriormente)
+        if (scanf("%d", &choice) != 1) {
+            printf("Opção invalida. Digite um numero.\n");
+            while (getchar() != '\n'); 
             continue;
         }
 
-        Item *selected = &inv->items[choice - 1];
-        use_item(inv, selected->name, player_hp, max_hp);
-        break;
+        if (choice == 0) return 0; // Sai
+
+        if (choice >= 1 && choice <= inv->count) {
+             return choice; // Sai do menu após usar um item com sucesso
+        }
     }
 }

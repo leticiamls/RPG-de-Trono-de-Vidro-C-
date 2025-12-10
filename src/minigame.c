@@ -295,10 +295,10 @@ void blackjack(Character *player, Runa *baralho_passado) {
         // --- SUBSTITUIÇÃO DA LÓGICA DE INVENTÁRIO (USANDO add_item) ---
         
         // Item 1: CHAVE DE WYRD (Não consumível, cura = 0)
-        add_item(&player->inventory, "CHAVE DE WYRD: O Mapa Antigo", 1, 0);
+        add_item(&player->inventory, "CHAVE DE WYRD: O Mapa Antigo", 1, 0, ITEM_TYPE_BUFF);
         
         // Item 2: MAGIA FAE (Não consumível, cura = 0)
-        add_item(&player->inventory, "MAGIA FAE: Poder Desbloqueado", 1, 0);
+        add_item(&player->inventory, "MAGIA FAE: Poder Desbloqueado", 1, 0, ITEM_TYPE_BUFF);
 
         // Exibe o novo inventário (usando a função do novo módulo)
         show_inventory(&player->inventory); // <-- USANDO O NOVO MÓDULO
