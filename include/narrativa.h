@@ -7,4 +7,4 @@ void handle_narrative(const char *title, Character *player);
 
 void narrativa_endovier(Character *player);
 
-#endif // NARRATIVE_LOGIC_H
+#endif

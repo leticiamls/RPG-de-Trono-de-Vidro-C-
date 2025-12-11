@@ -19,7 +19,7 @@
 void narrativa_endovier(Character *player) {
 	printf("\n%s## A Libertacao da Assassina: Das Minas de Sal ao Castelo de Vidro%s\n", COR_AZUL, PADRAO);
 	printf("\nPor dois anos, as minas de sal de Endovier foram seu inferno pessoal, e o nome Celaena Sardothien, a Assassina mais temida de Adarlan virou apenas mais uma lenda urbana...\n");
-	printf("Voce estava em um dos tuneis escuros das Minas de Sal de Endovier, pagando sua pena perpétua com uma picareta em suas maos calejadas, quando o som dos cascos se tornou inconfundivel. Nao era a patrulha usual. O passo era pesado, ordenado. Seus sentidos, amortecidos pela miseria, despertaram instantaneamente.\n");
+	printf("Voce estava em um dos tuneis escuros das Minas de Sal de Endovier, pagando sua pena perpetua com uma picareta em suas maos calejadas, quando o som dos cascos se tornou inconfundivel. Nao era a patrulha usual. O passo era pesado, ordenado. Seus sentidos, amortecidos pela miseria, despertaram instantaneamente.\n");
 	printf("\nDe repente, a luz das tochas inundou o tunel, e uma figura imponente e bem-vestida parou a sua frente. Sua armadura preta refletia a chama, e seus olhos eram frios como gelo.\n");
 	printf("\nO homem nao era outro senao Chaol Westfall, o Capitao da Guarda Real do Rei de Adarlan.\n\n");
 	
@@ -86,7 +86,7 @@ void narrativa_castelo(Character *player) {
     printf("\nA viagem de Endovier ao Castelo de Vidro foi rapida, mas o choque cultural foi imediato. Voce foi levada a um luxuoso quarto no anexo do castelo, uma suite digna de uma nobre, mas com guardas posicionados em cada esquina.\n");
     printf("\nChaol Westfall a informou sobre as regras: voce e a Campea do Principe, mas esta sob sua vigilancia constante.\n");
 
-    printf("\n%s%sChaol:%s \"Ha vinte e tres competidores, todos assassinos, ladroes ou mercenarios. Cada um tem um patrono que o trouxe aqui—nobres, duques, e ate o Principe Rhaegar. Nao se engane, todos querem sua cabeca, Celaena.\"\n", NEGRITO, COR_VERDE, PADRAO);
+    printf("\n%s%sChaol:%s \"Ha vinte e tres competidores, todos assassinos, ladroes ou mercenarios. Cada um tem um patrono que o trouxe aquinobres, duques, e ate o Principe Rhaegar. Nao se engane, todos querem sua cabeca, Celaena.\"\n", NEGRITO, COR_VERDE, PADRAO);
     
     printf("\nVoce observou a cidade de Rifthold atraves da janela de vidro. A liberdade estava tao perto, mas ainda separada por camadas de mentiras e intencoes assassinas.\n");
     
@@ -112,7 +112,7 @@ void narrativa_castelo(Character *player) {
             printf("%s+1 Ataque (Moral); -3 de amizade com Chaol Westfall (Desafio Aberto).%s Amizade atual: %d/100\n", COR_VERDE, PADRAO, g_chaol->amizade_score);
             break;
         case 3:
-            printf("\n%s%sCelaena:%s (Baixo) \"Um porco gordo vestido de seda. Em breve serei a faca que te sangrará.\"\n", NEGRITO, COR_LARANJA, PADRAO);
+            printf("\n%s%sCelaena:%s (Baixo) \"Um porco gordo vestido de seda. Em breve serei a faca que te sangrara.\"\n", NEGRITO, COR_LARANJA, PADRAO);
             printf("\nCain ouviu, e sua raiva e palpavel. Chaol a fuzila com o olhar.\n");
             g_chaol->amizade_score -= 8;
             printf("%s-8 de amizade com Chaol Westfall (Comportamento impulsivo).%s Amizade atual: %d/100\n", COR_VERMELHA, PADRAO, g_chaol->amizade_score);
@@ -133,7 +133,7 @@ void narrativa_castelo(Character *player) {
     printf("%s1) Mostrar Lealdade Absoluta ao Rei (Falsa Submissao); \n2) Responder com Desafio (Orgulho); \n3) Fazer uma Proposta Cinica (Acesso a Biblioteca).%s\n", COR_MAGENTA, PADRAO);
     
     scanf("%d", &escolhasNarrativa);
-    printf("Ação escolhida: %d\n", escolhasNarrativa);
+    printf("Acao escolhida: %d\n", escolhasNarrativa);
 
 
     switch (escolhasNarrativa) {
@@ -173,17 +173,17 @@ void narrativa_castelo(Character *player) {
 
 void narrativa_mortes_repentinas(Character *player) {
     printf("\n%s## Mortes Repentinas: O Misterio da Marca de Wyrd%s\n", COR_VERMELHA, PADRAO);
-    printf("\nO Torneio avanca, e voce elimina competidores com eficiencia fria. No entanto, algo esta errado. Candidatos fracos, que voce nem considerava ameaça, sao encontrados mortos em seus quartos, com os corpos drenados e uma marca estranha cravada na pele — as lendarias Marcas de Wyrd.\n");
+    printf("\nO Torneio avanca, e voce elimina competidores com eficiencia fria. No entanto, algo esta errado. Candidatos fracos, que voce nem considerava ameaca, sao encontrados mortos em seus quartos, com os corpos drenados e uma marca estranha cravada na pele: as lendarias Marcas de Wyrd.\n");
     
-    printf("\nA paranoia toma conta do Castelo. O Rei ordenou que Chaol dobrasse a segurança, mas nem mesmo a Guarda Real consegue impedir o terror que se espalha.\n");
+    printf("\nA paranoia toma conta do Castelo. O Rei ordenou que Chaol dobrasse a seguranca, mas nem mesmo a Guarda Real consegue impedir o terror que se espalha.\n");
     
-    printf("\nEm uma noite, Dorian a encontra em segredo na vastidão da Biblioteca, onde você tem buscado respostas para a magia que o Rei jurou ter banido.\n");
+    printf("\nEm uma noite, Dorian a encontra em segredo na vastidao da Biblioteca, onde voce tem buscado respostas para a magia que o Rei jurou ter banido.\n");
 
     printf("\n%s%sDorian:%s \"E magia negra, Celaena. Meu pai nao esta apenas patrocinando o Torneio, ele esta acobertando algo muito mais sinistro. Eu sinto isso, como um frio no meu peito.\"\n", NEGRITO, COR_AZUL, PADRAO);
     
-    printf("\nVoce revela a Dorian que suspeita de um dos competidores mais sombrios, uma princesa chamada Nehemia que desapareceu, e ambos começam a vasculhar a secao proibida da Biblioteca. Chaol, alertado pela ausencia de voces, irrompe na sala.\n");
+    printf("\nVoce revela a Dorian que suspeita de um dos competidores mais sombrios, uma princesa chamada Nehemia que desapareceu, e ambos comecam a vasculhar a secao proibida da Biblioteca. Chaol, alertado pela ausencia de voces, irrompe na sala.\n");
     
-    printf("\n%s%sChaol:%s \"O que voces estao fazendo aqui? Isso e loucura! Celaena, saia de perto do Principe. Eu sou responsavel pela sua segurança, e nao vou permitir que seja envolvida com qualquer... porcaria magica que ele encontre!\"\n", NEGRITO, COR_VERDE, PADRAO);
+    printf("\n%s%sChaol:%s \"O que voces estao fazendo aqui? Isso e loucura! Celaena, saia de perto do Principe. Eu sou responsavel pela sua seguranca, e nao vou permitir que seja envolvida com qualquer... porcaria magica que ele encontre!\"\n", NEGRITO, COR_VERDE, PADRAO);
     
     printf("\nNa pressa, voce derruba um volume antigo. Dele cai um pergaminho coberto de runas de Wyrd, brilhando com uma energia maligna, atraindo voce e repelindo Chaol.\n");
 
@@ -192,7 +192,7 @@ void narrativa_mortes_repentinas(Character *player) {
     printf("%s1) Tocar no Pergaminho para absorver seu conhecimento (Alto Risco, Alto Ganho); \n2) Ignorar a magia e focar em acalmar a furia de Chaol; \n3) Usar Dorian como escudo, empurrando-o para a magia (Traicao de Confiança).%s\n", COR_MAGENTA, PADRAO);
 
     scanf("%d", &escolhasNarrativa);
-    printf("Ação escolhida: %d\n", escolhasNarrativa);
+    printf("Acao escolhida: %d\n", escolhasNarrativa);
 
     switch (escolhasNarrativa) {
         case 1:
@@ -201,7 +201,7 @@ void narrativa_mortes_repentinas(Character *player) {
             player->level++;
             g_chaol->amizade_score -= 10;
             g_dorian->amizade_score += 15;
-            printf("%s+5 Ataque, Nivel Up!%s Sua saude agora é: %s%s%d%s. %s-10 Chaol, +15 Dorian.%s\n", 
+            printf("%s+5 Ataque, Nivel Up!%s Sua saude agora e: %s%s%d%s. %s-10 Chaol, +15 Dorian.%s\n", 
                    COR_VERDE, PADRAO, NEGRITO, COR_AZUL, player->health, PADRAO, COR_VERMELHA, PADRAO);
             break;
         case 2:
@@ -284,7 +284,7 @@ void handle_narrative(const char *title, Character *player) {
     } else if (strcmp(title, "The Last Dance") == 0) {
         narrativa_the_last_dance(player);
     } else {
-        printf("Um momento de reflexão e dialogo. O caminho a frente e incerto.\n");
+        printf("Um momento de reflexao e dialogo. O caminho a frente e incerto.\n");
     }
     
     display_character_stats(player);

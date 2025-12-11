@@ -10,7 +10,7 @@
 #include "../include/inventario.h"
 #include "../include/narrativa.h"
 
-// --- Lógica do Jogo ---
+// ================= Voids Itens =================
 void aplicar_magia_fae(Character *player) {
     if (player == NULL) return;
 
@@ -18,9 +18,8 @@ void aplicar_magia_fae(Character *player) {
     const float MULT_ATAQUE = 0.30f;
     const float MULT_DEFESA = 0.15f;
     
-    // Cálculo dos bônus em pontos inteiros
     int bonus_ataque_pts = (int)(player->attack * MULT_ATAQUE);
-    int bonus_defesa_pts = (int)(player->defesa * MULT_DEFESA); // Usando player->defesa para calcular
+    int bonus_defesa_pts = (int)(player->defesa * MULT_DEFESA);
 
     for (int i = 0; i < player->inventory.count; i++) {
         Item *item = &player->inventory.items[i];
@@ -28,9 +27,8 @@ void aplicar_magia_fae(Character *player) {
         if (strcmp(item->name, item_name) == 0) {
             if (item->quantity == 1) { 
                 
-                // APLICAÇÃO CORRIGIDA
                 player->attack += bonus_ataque_pts;
-                player->defesa += bonus_defesa_pts; // <-- Aplicando à DEFESA, como pretendido (15%)
+                player->defesa += bonus_defesa_pts; 
                 
                 item->quantity = 0; 
                 
@@ -48,15 +46,13 @@ void aplicar_magia_fae(Character *player) {
 void aplicar_amuleto_ferro(Character *player, Character *enemy) {
     if (player == NULL || enemy == NULL) return;
 
-    const char *item_name = "AMULETO: anulador de magia(voce bloqueara a magia inimiga, mas nao sera capaz de utilizar a sua)";
+    const char *item_name = "AMULETO: anulador de magia(voce bloqueara a magia inimiga)";
     const float reducao_ataque_inimigo = 0.30f;
     int amuleto_encontrado = 0;
 
-    // 1. Verificar se o Amuleto de Ferro está no inventario do jogador
     for (int i = 0; i < player->inventory.count; i++) {
         Item *item = &player->inventory.items[i];
         
-        // Verifica se o Amuleto está presente e se a quantidade é maior que zero
         if (strcmp(item->name, item_name) == 0 && item->quantity > 0) {
             amuleto_encontrado = 1;
             break; 
@@ -64,14 +60,11 @@ void aplicar_amuleto_ferro(Character *player, Character *enemy) {
     }
 
     if (amuleto_encontrado) {
-        // 2. Aplicar a penalidade de 30% no ataque do inimigo
         int dano_original = enemy->attack;
         
-        // Calcula a nova penalidade, garantindo que o ataque minimo seja 1 (ou 0, dependendo da regra do jogo)
         int reducao = (int)(dano_original * reducao_ataque_inimigo);
         enemy->attack = dano_original - reducao;
         
-        // Garante que o ataque nao fique negativo, se a logica permitir
         if (enemy->attack < 0) {
             enemy->attack = 0; 
         }
@@ -79,8 +72,6 @@ void aplicar_amuleto_ferro(Character *player, Character *enemy) {
         printf("\n\033[1;36m[AMULETO DE FERRO ATIVO]\033[0m A presenca do ferro afeta o inimigo!");
         printf("\nO ataque de %s foi reduzido em %d (30%%). ATK Inimigo atual: %d\n", 
                enemy->name, reducao, enemy->attack);
-
-        // Nao há necessidade de uma flag de "uso" no Amuleto, pois ele é um item passivo/permanente.
     }
 }
 
@@ -92,9 +83,9 @@ void handle_training(Character *player) {
 
     printf("**O Capitao da Guarda Real, Chaol Westfall, observa voce na arena de treinamento. Seus olhos nao demonstram emocao, mas a pressao de seu olhar e quase palpavel. Ele nao esta aqui para ser seu amigo, mas para garantir que voce esteja apta para a competicao do Rei.\n");
 
-    printf("\n%sChaol:%s 'Celaena,' ele diz, a voz grave ecoando no silencio da arena. 'A competicao nao perdoa fraquezas. Voce tem um tempo limitado. Escolha um foco. Onde esta sua maior necessidade?'\n", CYN, PADRAO);
+    printf("\n%sChaol:%s \"Celaena, a competicao nao perdoa fraquezas. Voce tem um tempo limitado. Escolha um foco. Onde esta sua maior necessidade?\n", COR_VERDE, PADRAO);
 
-    printf("\n'Voce sabe que cada escolha tera um custo. O foco total em uma area significa negligenciar as outras, mas o tempo e curto.'\n");
+    printf("\nVoce sabe que cada escolha tera um custo. O foco total em uma area significa negligenciar as outras, mas o tempo e curto.\"\n");
 
     printf("\n** ESCOLHA SEU FOCO DE TREINAMENTO: **\n");
     printf("1. Treinar Arco e Flecha: Foco em Precisao e Sorte (+3 ataque | +5 sorte)\n");
@@ -110,35 +101,38 @@ void handle_training(Character *player) {
     case 1:
         player->attack += 3; 
         player->sorte += 5;
-        printf("\nChaol acena com a cabeça. \"Bom. A melhor defesa é um ataque que não pode ser parado.\" Você passa as horas seguintes praticando sequências de golpes com força total. Seu corpo dói, mas seu ataque está mais afiado.\n");
+        printf("\n%s%sChaol:%s \"Bom. A melhor defesa e um ataque que nao pode ser parado.\"\n", NEGRITO, COR_VERDE, PADRAO);
+        printf("Voce passa as horas seguintes praticando sequencias de tiro ao alvo com arco e flecha. Seu corpo doi, mas seu ataque esta mais afiado.\n");
         printf("Seu poder de ataque aumentou para %d. E sua sorte aumentou para %d\n", player->attack, player->sorte);
         break;
     case 2:
         player->defesa += 3; 
         player->forca += 5;
-        printf("\n\"Defesa? Uma escolha sensata para quem não confia em ninguém,\" Chaol murmura. Você passa o tempo treinando com escudos pesados e armaduras, aprendendo a absorver e desviar o impacto. Sua resistência é notável.\n");
-        printf("Seu poder de defesa aumentou para %d e sua Força para %d.\n", player->defesa, player->forca);
+        printf("\n%s%sChaol:%s \"Lutas? Uma escolha sensata para quem nao confia em ninguem.\"\n", NEGRITO, COR_VERDE, PADRAO);
+        printf("Voce passa o tempo treinando com sacos de pancada pesados e armaduras, aprendendo a absorver e desviar o impacto. Sua resistencia e notavel.\n");
+        printf("Seu poder de defesa aumentou para %d e sua Forca para %d.\n", player->defesa, player->forca);
         break;
     case 3:
         player->attack += 3; 
         player->defesa += 5;
-        printf("\nChaol franze a testa. \"Sorte? Não confio nela. Mas a agilidade pode salvar sua vida.\" Você treina movimentos evasivos e a leitura rápida de intenções. Seu instinto está mais aguçado.\n");
-        printf("Seu poder de defesa aumentou para %d e sua força para %d.\n", player->defesa, player->forca);
+        printf("\n%s%sChaol:%s \"Treinar como usar uma espada pode te ajudar muito nos momentos que requerem agilidade.\"\n", NEGRITO, COR_VERDE, PADRAO);
+        printf("Voce treina movimentos evasivos e a leitura rapida de intencoes. Seu instinto esta mais agucado.\n");
+        printf("Seu poder de defesa aumentou para %d e sua forca para %d.\n", player->defesa, player->forca);
         break;
     default:
-        printf("\nVocê hesita. Chaol apenas suspira e se afasta. \"Perdeu seu tempo, Assassina. A indecisão é a morte.\" Você não ganha bônus.\n");
+        printf("\nVoce hesita. Chaol apenas suspira e se afasta.\n");
+        printf("\n%s%sChaol:%s \"Perdeu seu tempo, Assassina. A indecisão e a morte.\"\n", NEGRITO, COR_VERDE, PADRAO);
+        printf("Voce nao ganha bonus.\n");
         break;
 }
     
     display_character_stats(player);
 }
 
-extern void aplicar_magia_fae(Character *player);
-
 void handle_combat(Character *player) {
     printf("\n[COMBATE] Um desafio se apresenta!\n");
     
-    // --- 1. DEFINIÇÃO E CRIAÇÃO DO INIMIGO ---
+    // ========= Definição e criação do inimigo ==========
     
     char *enemy_name;
     int enemy_health;
@@ -147,7 +141,6 @@ void handle_combat(Character *player) {
     int enemy_defense;
     
 
-    // Lógica básica para definir o inimigo (usando os stats antigos como base)
     if (strcmp(player->class_name, "Assassina") == 0) {
         enemy_name = "Ridderak";
         enemy_health = 60 + (rand() % 20); // Stats aleatórios
@@ -162,15 +155,10 @@ void handle_combat(Character *player) {
         enemy_max_health = enemy_health;
     }
 
-    
-
-    // --- PONTO DE APLICAÇÃO DO BÔNUS ---
     if (strcmp(enemy_name, "Cain") == 0 || strcmp(enemy_name, "Confronto Final") == 0) {
-        // Checa e aplica o bônus antes de criar o inimigo final
         aplicar_magia_fae(player); 
     }
 
-    // Cria o inimigo usando a função externa
     Character *enemy = create_enemy(enemy_name, enemy_health, enemy_attack, enemy_defense, enemy_max_health);
     if (enemy == NULL) {
         fprintf(stderr, "Erro critico: Falha ao criar inimigo.\n");
@@ -182,32 +170,25 @@ void handle_combat(Character *player) {
     
     // --- 2. ORQUESTRAÇÃO DO COMBATE (Loop de Retry) ---
     do {
-        // Restaura o HP do jogador para o valor inicial antes de CADA TENTATIVA
-        // (Nota: Em um RPG, você deve usar uma variável para o HP Máximo)
-        player->health = player->health; // Mantém a vida atual
-        enemy->health = enemy_health;    // Restaura o HP do inimigo para o máximo
+        player->health = player->health;
+        enemy->health = enemy_health;
         
         printf("\nVoce enfrenta o(a) %s! Prepare-se.\n", enemy->name);
 
-        // Chama a lógica de combate completa (implementada em src/combate.c)
         resultado_batalha = iniciar_batalha(player, enemy); 
         
         if (resultado_batalha == 0) {
-            // Resultado 0: Desistir (Fim de Jogo)
+            // 0: Desistir (Fim de Jogo)
             free(enemy);
             exit(0);
         }
         
-    } while (resultado_batalha == 2); // Resultado 2: Tentar Novamente (Retry)
+    } while (resultado_batalha == 2);
     
     // --- 3. PÓS-BATALHA (Recompensa) ---
     if (resultado_batalha == 1) {
         printf("\n[SUCESSO] O desafio foi vencido!\n");
-        player->health += 10;
-        printf("Você recupera 10 de vida. Vida atual: %d\n", player->health);
     }
-    
-    // Libera a memória alocada para o inimigo temporário
     free(enemy);
 }
 

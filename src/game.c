@@ -11,52 +11,46 @@
 #include "../include/combate.h"
 
 
-// Variáveis globais (simplificação para o projeto)
+// ========== Variáveis globais ==========
 Character *g_player = NULL;
+Character *g_enemy = NULL;
 Queue *g_progression_queue = NULL;
 Runa *g_minigame_deck = NULL;
 
-//NPCs
+// ========== NPCs ==========
 NPC *g_chaol = NULL;
 NPC *g_dorian = NULL;
 NPC *g_nehemia = NULL;
 
-// Protótipos de funções internas
 static void load_or_new_game();
-static void setup_progression_queue();
-static void initialize_npcs() {
-    // ATRIBUTOS BASE DE CADA NPC
 
-    // Chaol: Baixa amizade inicial (20), mas Alto Poder/Status (50)
+static void setup_progression_queue();
+
+static void initialize_npcs() {
     g_chaol = create_npc("Chaol Westfall", 20, 50); 
-    
-    // Dorian: Amizade neutra/alta (40), Alto Poder/Status (70)
-    g_dorian = create_npc("Dorian Havilliard", 40, 70); 
-    
-    // Nehemia: Amizade alta (70), Empatia/Confiança alta (60)
+    g_dorian = create_npc("Dorian Havilliard", 40, 70);
     g_nehemia = create_npc("Nehemia Ytger", 70, 60); 
 
     // ... (verificação de erro) ...
 }
 
 int initialize_game() {
-    srand(time(NULL)); // Inicializa o gerador de números aleatórios
+    srand(time(NULL));
 
     initialize_npcs();
-    // 1. Carregar ou iniciar novo jogo
+
     load_or_new_game();
 
-    // 2. Configurar a fila de progressão
     setup_progression_queue();
 
-    // 3. Configurar o baralho do mini-game
     g_minigame_deck = criar_baralho_runas();
+
     return 0;
 }
 
 static void load_or_new_game() {
     int choice = 0;
-    printf("Deseja carregar um jogo salvo (1) ou iniciar um novo jogo (2)? ");
+    printf("%s%sDeseja carregar um jogo salvo (1) ou iniciar um novo jogo (2)?%s ", NEGRITO, COR_VERDE, PADRAO);
     if (scanf("%d", &choice) != 1) {
         while (getchar() != '\n');
         choice = 2;
@@ -65,18 +59,18 @@ static void load_or_new_game() {
     if (choice == 1) {
         g_player = load_game();
         if (g_player == NULL) {
-            printf("Nenhum jogo salvo encontrado. Iniciando novo jogo...\n");
+            printf("%s%sNenhum jogo salvo encontrado. Iniciando novo jogo...%s\n", NEGRITO, COR_VERDE, PADRAO);
             choice = 2;
         } else {
-            printf("Jogo carregado com sucesso!\n");
+            printf("Jogo carregado com sucesso!\n", NEGRITO, COR_VERDE, PADRAO);
         }
     }
 
     if (choice == 2 || g_player == NULL) { 
-        printf("Iniciando novo jogo (Celaena Sardothien)...\n");
+        printf("%s%sIniciando novo jogo (Celaena Sardothien)...%s\n", NEGRITO, COR_VERDE, PADRAO);
         g_player = create_character();
         if (g_player == NULL) {
-            fprintf(stderr, "Erro critico: Falha ao criar personagem.\n");
+            fprintf(stderr, "%s%sErro critico: Falha ao criar personagem.%s\n", NEGRITO, COR_VERMELHA, PADRAO);
             exit(1);
         }
     }
@@ -86,13 +80,13 @@ static void setup_progression_queue() {
     g_progression_queue = create_queue();
     
     // Fila de eventos baseada na narrativa de Trono de Vidro (simplificada)
-    enqueue_chapter(g_progression_queue, "Minas de Endovier", 0); // Narrativa
-    enqueue_chapter(g_progression_queue, "O Castelo de Vidro", 0); // Narrativa
+    enqueue_chapter(g_progression_queue, "Minas de Endovier", 0); // Narrativa 1
+    enqueue_chapter(g_progression_queue, "O Castelo de Vidro", 0); // Narrativa 2
     enqueue_chapter(g_progression_queue, "Treinamento para o Campeonato", 3); //Treinamento
-    enqueue_chapter(g_progression_queue, "Mortes Repentinas", 0); // Narrativa
+    enqueue_chapter(g_progression_queue, "Mortes Repentinas", 0); // Narrativa 3
     enqueue_chapter(g_progression_queue, "Revelacoes de Elena", 2); // Mini-Game
     enqueue_chapter(g_progression_queue, "Ameaca de Ridderak", 1); // Combate
-    enqueue_chapter(g_progression_queue, "The Last Dance", 0); // Narrativa
+    enqueue_chapter(g_progression_queue, "The Last Dance", 0); // Narrativa 4
     enqueue_chapter(g_progression_queue, "Confronto Final", 1); // Combate
 }
 
@@ -103,7 +97,7 @@ void run_game_loop() {
     while (!is_queue_empty(g_progression_queue)) {
         current_chapter = dequeue_chapter(g_progression_queue);
         
-        printf("\n--- Capitulo: %s ---\n", current_chapter->title);
+        printf("\n%s=== Capitulo: %s ===%s\n", NEGRITO, current_chapter->title, PADRAO);
 
     switch (current_chapter->type) {
         case 0: // Narrativa
@@ -127,7 +121,7 @@ void run_game_loop() {
         
         // Pergunta ao jogador se deseja continuar
         if (!is_queue_empty(g_progression_queue)) {
-            printf("\nCapitulo concluido. Deseja continuar (1) ou sair (2)? ");
+            printf("\n%s%sCapitulo concluido. Deseja continuar (1) ou sair (2)?%s ", NEGRITO, COR_VERDE, PADRAO);
             if (scanf("%d", &choice) != 1 || choice != 1) {
                 printf("Saindo do jogo...\n");
                 free(current_chapter);
@@ -139,7 +133,7 @@ void run_game_loop() {
     }
     
     if (is_queue_empty(g_progression_queue)) {
-        printf("\nParabens! Você completou a historia de Trono de Vidro!\n");
+        printf("\n%s%sParabens! Você completou a historia de Trono de Vidro!%s\n", NEGRITO, COR_VERDE, PADRAO);
     }
 }
 
@@ -148,7 +142,6 @@ void cleanup_game() {
     if (g_progression_queue) free_queue(g_progression_queue);
     if (g_minigame_deck) liberar_baralho(g_minigame_deck);
     
-    // Libera a memória alocada para os NPCs
     if (g_chaol) free(g_chaol);
     if (g_dorian) free(g_dorian);
     if (g_nehemia) free(g_nehemia);

@@ -10,7 +10,7 @@
 typedef struct {
     char name[MAX_ITEM_NAME];
     int quantity;
-    int heal_amount;  // quanto cura, 0 caso não seja consumível
+    int heal_amount;
     int type;
 } Item;
 

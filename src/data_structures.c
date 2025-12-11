@@ -3,7 +3,7 @@
 #include <string.h>
 #include "../include/data_structures.h"
 
-// --- Implementação da Lista Encadeada (Deck/Baralho) ---
+// ==== Implementação da Lista Encadeada (Baralho) ====
 
 Runa* criar_runa(const char *simbolo) {
     Runa *r = (Runa*) malloc(sizeof(Runa));
@@ -33,7 +33,6 @@ Runa* criar_baralho_runas() {
     char simbolo[20];
     Runa *head = NULL;
 
-    // Cartas de 2 a 9
     for (int i = 0; i < 4; i++) {
         for (int v = 2; v <= 9; v++) { 
             snprintf(simbolo, sizeof(simbolo), "%s%d", runasBase[i], v);
@@ -41,7 +40,6 @@ Runa* criar_baralho_runas() {
         }
     }
 
-    // Cartas de Figura (Valem 10)
     for (int i = 0; i < 4; i++) {
         for (int f = 0; f < 3; f++) {
             snprintf(simbolo, sizeof(simbolo), "%s-%s", runasBase[i], figuras[f]);
@@ -49,12 +47,10 @@ Runa* criar_baralho_runas() {
         }
     }
     
-    // Cartas Ás/Aelino (Valem 1/11)
     for (int i = 0; i < 4; i++) {
         snprintf(simbolo, sizeof(simbolo), "%s-AELINO", runasBase[i]);
         head = anexar_runa(head, criar_runa(simbolo));
     }
-
     return head;
 }
 
@@ -68,7 +64,7 @@ void liberar_baralho(Runa *head) {
     }
 }
 
-// --- Implementação da Fila (Queue/Progressão) ---
+// =========== Implementação da Fila (Queue) ===========
 
 Queue* create_queue() {
     Queue *queue = (Queue *)malloc(sizeof(Queue));

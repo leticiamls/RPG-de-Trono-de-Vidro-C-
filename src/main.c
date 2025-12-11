@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "game.h"
-// $ gcc -Iinclude src/*.c -o trono.exe
+#include "data_structures.h"
+
+// gcc -Iinclude src/*.c -o trono.exe
+
 int main() {
-    printf("Bem-vindo ao RPG Trono de Vidro!\n");
-    printf("==================================\n");
+    printf("%s%s====================================\n", NEGRITO, COR_MAGENTA);
+    printf("= Bem-vindo ao RPG Trono de Vidro! =\n");
+    printf("====================================%s\n", PADRAO);
     
-    // Inicializa o jogo
     if (initialize_game() != 0) {
         fprintf(stderr, "Erro ao inicializar o jogo.\n");
         return 1;
@@ -18,6 +21,6 @@ int main() {
     // Finaliza o jogo
     cleanup_game();
 
-    printf("Obrigado por jogar!\n");
+    printf("%s%sObrigado por jogar!%s\n", NEGRITO, COR_VERDE, PADRAO);
     return 0;
 }

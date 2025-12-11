@@ -19,6 +19,7 @@
 #define DEFENDER 3
 #define ESQUIVAR 4
 extern void aplicar_magia_fae(Character *player);
+extern void aplicar_amuleto_ferro(Character *player, Character *enemy);
 
 // ====================== FUNÇÕES BÁSICAS ============================
 
@@ -60,7 +61,7 @@ int calcularDano(int base, float mult) {
 
 // ====================== LÓGICA DE COMBATE ============================
 
-// Retorno: 0 = Derrota (Fim), 1 = Vitória (Continua), 2 = Retry (Repete loop)
+//0 = Derrota (Fim), 1 = Vitória (Continua), 2 = Retry (Repete loop)
 int iniciar_batalha(Character* player, Character* enemy) {
     QueueCombate turnos = {NULL, NULL};
     int rodada = 1;
@@ -88,7 +89,7 @@ int iniciar_batalha(Character* player, Character* enemy) {
         // ---------------- TURNO DO JOGADOR ----------------
         if(atual == player) {
             if (acao == 0) { 
-                printf(BLUE "\nE seu turno! Escolha sua açao:\n" RESET);
+                printf(BLUE "\nE seu turno! Escolha sua acao:\n" RESET);
                 printf("1 - Atacar Leve\n");
                 printf("2 - Defender\n");
                 printf("3 - Esquivar\n");
@@ -129,9 +130,8 @@ int iniciar_batalha(Character* player, Character* enemy) {
                                     continue; 
                                     
                                 } else if (selected_item->type == ITEM_TYPE_BUFF) {
-                                    // Aqui, o combate.c chama o módulo de Lógica de Jogo
-                                    aplicar_magia_fae(player); // <-- Chamada ao módulo externo (game_logic.c)
-                                    // O turno termina aqui
+                                    aplicar_amuleto_ferro(player, enemy);
+                                    aplicar_magia_fae(player);
                                     continue; 
                                 }
                             }

@@ -9,7 +9,7 @@
 
 #include "minigame.h"
 
-// --- Funções de Lógica (Blackjack) ---
+// =============== Funções de Lógica ===============
 int calcular_valor_runa(const Runa *runa) {
     if (strstr(runa->simbolo, "Lamina") || strstr(runa->simbolo, "Coroa") || strstr(runa->simbolo, "Dragao")) {
         return 10;
@@ -121,7 +121,6 @@ int jogar_rodada(Runa **baralho, int num_rodada, int *vitorias_celaena, int *vit
     printf("\n" NEGRITO "--------------------------- | RODADA %d | ---------------------------\n" PADRAO, num_rodada);
     printf("PLACAR: Celaena %d - %d Elena\n", *vitorias_celaena, *vitorias_npc);
 
-    // Distribuição inicial (2 cartas para cada)
     mao_celaena = anexar_runa(mao_celaena, distribuir_carta(baralho));
     mao_npc = anexar_runa(mao_npc, distribuir_carta(baralho));
     mao_celaena = anexar_runa(mao_celaena, distribuir_carta(baralho));
@@ -138,7 +137,7 @@ int jogar_rodada(Runa **baralho, int num_rodada, int *vitorias_celaena, int *vit
     printf("\n'Veja, Assassina. Esta e a face da Magia de Adarlan que eu controlo.'\n");
     imprimir_mao("Elena", mao_npc, 1, 0);
 
-    // --- Turno de Celaena ---
+    // ========== Turno de Celaena ==========
     do {
         pontuacao_celaena = calcular_pontuacao(mao_celaena);
 
@@ -203,7 +202,7 @@ int jogar_rodada(Runa **baralho, int num_rodada, int *vitorias_celaena, int *vit
         printf("Elena para com pontuacao: %d\n", pontuacao_npc);
     }
 
-    // --- RESULTADO FINAL ---
+    // ================ RESULTADO FINAL ================
     printf("\n" NEGRITO "--- RESULTADO DA RODADA %d ---\n" PADRAO, num_rodada);
     printf("Sua Pontuacao: %d\n", pontuacao_celaena);
     printf("Pontuacao de Elena: %d\n", pontuacao_npc);
@@ -231,7 +230,7 @@ int jogar_rodada(Runa **baralho, int num_rodada, int *vitorias_celaena, int *vit
 }
 
 
-// --- Função Principal do Jogo (Duelo de Três) ---
+// ================ Função Principal do Jogo ================
 void blackjack(Character *player, Runa *baralho_passado) {
     srand(time(NULL));
     int vitorias_celaena = 0;
@@ -239,7 +238,6 @@ void blackjack(Character *player, Runa *baralho_passado) {
     int rodada_atual = 1;
     int resultado_rodada;
 
-    
     Runa *working_deck = NULL;
 
     working_deck = baralho_passado;
@@ -248,7 +246,7 @@ void blackjack(Character *player, Runa *baralho_passado) {
     printf("\n" NEGRITO "==== Duelo de Simbolos (Trono de Vidro) ====\n" PADRAO);
 
     // Introdução Narrativa
-    printf("**O ar nas catacumbas cheira a poeira e mofo. Os passos de Celaena ecoam, tensos, ate ela encontrar Elena Galathynius, a primeira rainha de Adarlan. Para provar seu valor e herdar seu destino, Celaena deve vencer o jogo que Elena propoe: um duelo de chance, sabedoria e coragem. O premio e o Conhecimento das Chaves de Wyrd (essencial para a batalha final).\n\n");
+    printf("O ar nas catacumbas cheira a poeira e mofo. Os passos de Celaena ecoam, tensos, ate ela encontrar Elena Galathynius, a primeira rainha de Adarlan. Para provar seu valor e herdar seu destino, Celaena deve vencer o jogo que Elena propoe: um duelo de chance, sabedoria e coragem. O premio e o seu poder interior(fogo de fae) ser ativado (essencial para a batalha final).\n\n");
     
     // Regras
     printf(NEGRITO "============================== Regras do Jogo ==============================\n" PADRAO);
@@ -294,23 +292,16 @@ void blackjack(Character *player, Runa *baralho_passado) {
 
     if (vitorias_celaena > vitorias_npc) {
         printf(COR_VERDE NEGRITO "\nVITORIA SUPREMA! Você venceu Elena!\n" PADRAO);
+         printf("\n%s%sElena:%s \"Parabens herdeira... Com isso eu te concedo seu poder para ser usado contra Cain no duelo final, use com cautela!\"\n", NEGRITO, CYN, PADRAO);
         
-        // --- SUBSTITUIÇÃO DA LÓGICA DE INVENTÁRIO (USANDO add_item) ---
-        
-        // Item 1: CHAVE DE WYRD (Não consumível, cura = 0)
-        add_item(&player->inventory, "CHAVE DE WYRD: O Mapa Antigo", 1, 0, ITEM_TYPE_BUFF);
-        
-        // Item 2: MAGIA FAE (Não consumível, cura = 0)
+        // Item: MAGIA FAE (Não consumível, cura = 0)
         add_item(&player->inventory, "MAGIA FAE: Poder Desbloqueado", 1, 0, ITEM_TYPE_BUFF);
-
-        // Exibe o novo inventário (usando a função do novo módulo)
-        show_inventory(&player->inventory); // <-- USANDO O NOVO MÓDULO
+        show_inventory(&player->inventory);
 
     } else {
-        printf(COR_VERMELHA NEGRITO "\nDERROTA. Elena ri friamente: 'Ainda nao e seu momento, Herdeira.'\n" PADRAO);
+        printf(COR_VERMELHA NEGRITO "\nDERROTA. Elena ri friamente: 'Ainda nao e seu momento, herdeira.'\n" PADRAO);
     }
     printf("\n*****************************************************************\n");
 
-    // Liberação final de memória
     liberar_baralho(working_deck);
 }

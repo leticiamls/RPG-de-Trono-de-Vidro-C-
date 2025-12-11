@@ -2,7 +2,7 @@
 #define DATA_STRUCTURES_H
 #define CHAPTER_TYPE_TRAINING 3
 
-// Cores
+// =============== Cores ===============
 #define CYN "\e[0;36m"
 #define PADRAO "\x1b[0m"
 #define COR_VERMELHA "\033[31m"
@@ -12,20 +12,19 @@
 #define COR_MAGENTA "\033[0;35m"
 #define COR_LARANJA "\033[0;33m"
 
-// Definição da estrutura para o Baralho (Lista Encadeada)
+// ===== Lista Encadeada Baralho ========
 typedef struct runa {
     char simbolo[20];
     int ativada;
     struct runa *prox;
 } Runa;
 
-// Funções para Lista Encadeada (Baralho)
 Runa* criar_runa(const char *simbolo);
 Runa* anexar_runa(Runa *head, Runa *nova);
 Runa* criar_baralho_runas();
 void liberar_baralho(Runa *head);
 
-// Definição da estrutura para a Progressão (Fila)
+// ============== Filas =================
 typedef struct Chapter {
     char title[100];
     int type; // 0: Narrativa, 1: Combate, 2: Mini-Game
@@ -37,11 +36,10 @@ typedef struct Queue {
     Chapter *rear;
 } Queue;
 
-// Funções para Fila (Progressão)
 Queue* create_queue();
 void enqueue_chapter(Queue *queue, const char *title, int type);
 Chapter* dequeue_chapter(Queue *queue);
 int is_queue_empty(Queue *queue);
 void free_queue(Queue *queue);
 
-#endif // DATA_STRUCTURES_H
+#endif

@@ -9,8 +9,7 @@
 typedef struct {
     char name[MAX_NAME_LEN];
     char class_name[MAX_CLASS_LEN];
-
-    // Atributos Numéricos
+    
     int health;
     int max_health;
     int sorte;

@@ -43,24 +43,19 @@ int remove_item(Inventory *inv, const char *name, int qty) {
 }
 
 int use_item(Inventory *inv, const char *name) {
-    // 1. Procura o item
     for (int i = 0; i < inv->count; i++) {
         if (strcmp(inv->items[i].name, name) == 0) {
             
-            // 2. Armazena o valor de cura/buff para retorno
             int effect_value = inv->items[i].heal_amount;
             int item_type = inv->items[i].type;
 
-            // 3. Se for consumível, remove. Se for buff, apenas retorna o valor (depende da lógica)
-            // Para Buff/Fae, não faz nada com a quantidade aqui.
             if (item_type == ITEM_TYPE_CONSUMABLE) {
                  remove_item(inv, name, 1);
             }
-            // 4. Retorna um código que o chamador (combate.c) interpretará
             return effect_value; 
         }
     }
-    return 0; // Item não encontrado
+    return 0;
 }
 
 void show_inventory(Inventory *inv) {
@@ -85,17 +80,16 @@ int open_inventory_menu(Inventory *inv) {
     while (1) {
         show_inventory(inv);
         printf("Escolha um item para usar (0 para sair): ");
-        // Limpeza de buffer necessária (como recomendado anteriormente)
         if (scanf("%d", &choice) != 1) {
             printf("Opção invalida. Digite um numero.\n");
             while (getchar() != '\n'); 
             continue;
         }
 
-        if (choice == 0) return 0; // Sai
+        if (choice == 0) return 0;
 
         if (choice >= 1 && choice <= inv->count) {
-             return choice; // Sai do menu após usar um item com sucesso
+             return choice;
         }
     }
 }

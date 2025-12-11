@@ -4,16 +4,15 @@
 #include "../include/file_handler.h"
 #include "../include/character.h"
 
-// --- Manipulação de Arquivos (Savepoints) ---
+// ================= Savepoints =================
 
 int save_game(const Character *player) {
-    FILE *file = fopen(SAVE_FILE, "wb"); // "wb" para escrita binária
+    FILE *file = fopen(SAVE_FILE, "wb");
     if (file == NULL) {
         perror("Erro ao abrir arquivo de save");
         return -1;
     }
 
-    // Escreve a estrutura Character inteira no arquivo
     if (fwrite(player, sizeof(Character), 1, file) != 1) {
         perror("Erro ao escrever dados de save");
         fclose(file);
@@ -26,9 +25,8 @@ int save_game(const Character *player) {
 }
 
 Character* load_game() {
-    FILE *file = fopen(SAVE_FILE, "rb"); // "rb" para leitura binária
+    FILE *file = fopen(SAVE_FILE, "rb");
     if (file == NULL) {
-        // Arquivo não existe ou erro de abertura, retorna NULL para novo jogo
         return NULL;
     }
 
@@ -39,9 +37,7 @@ Character* load_game() {
         return NULL;
     }
 
-    // Lê a estrutura Character inteira do arquivo
     if (fread(player, sizeof(Character), 1, file) != 1) {
-        // Erro de leitura ou arquivo vazio
         free(player);
         player = NULL;
     }
@@ -50,10 +46,10 @@ Character* load_game() {
     return player;
 }
 
-// --- Manipulação de Arquivos (Configurações) ---
+// ================= Configurações =================
 
 int save_config(int volume, int difficulty) {
-    FILE *file = fopen(CONFIG_FILE, "w"); // "w" para escrita de texto
+    FILE *file = fopen(CONFIG_FILE, "w");
     if (file == NULL) {
         perror("Erro ao abrir arquivo de configuração");
         return -1;
@@ -68,15 +64,13 @@ int save_config(int volume, int difficulty) {
 }
 
 int load_config(int *volume, int *difficulty) {
-    FILE *file = fopen(CONFIG_FILE, "r"); // "r" para leitura de texto
+    FILE *file = fopen(CONFIG_FILE, "r");
     if (file == NULL) {
-        // Arquivo não existe, usa valores padrão
         *volume = 50;
         *difficulty = 1;
         return -1;
     }
 
-    // Leitura simples de chave=valor
     char line[100];
     while (fgets(line, sizeof(line), file)) {
         if (strstr(line, "volume=")) {
