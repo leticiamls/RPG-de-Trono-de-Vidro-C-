@@ -19,7 +19,6 @@
 #define DEFENDER 3
 #define ESQUIVAR 4
 extern void aplicar_magia_fae(Character *player);
-extern void aplicar_amuleto_ferro(Character *player, Character *enemy);
 
 // ====================== FUNÇÕES BÁSICAS ============================
 
@@ -110,32 +109,26 @@ int iniciar_batalha(Character* player, Character* enemy) {
                     case 2: acao = DEFENDER; break;
                     case 3: acao = ESQUIVAR; break;
                     case 4:{
-                            printf("HP %s: %d / %d\n", player->name, player->health, player->max_health); // <-- EXIBIÇÃO DE HP AQUI
+                            printf("HP %s: %d / %d\n", player->name, player->health, player->max_health);
                             
-                            // open_inventory_menu agora tem apenas 1 argumento
                             int item_index = open_inventory_menu(&player->inventory);
                             if (item_index > 0) {
-                                // Obter o Item real
                                 Item *selected_item = &player->inventory.items[item_index - 1];
 
                                 if (selected_item->type == ITEM_TYPE_CONSUMABLE) {
-                                    // Aplicar a cura
                                     player->health += selected_item->heal_amount;
                                     if (player->health > player->max_health) player->health = player->max_health;
                                     
                                     // Remover o item
                                     remove_item(&player->inventory, selected_item->name, 1); 
                                     printf(GREEN "Você usou %s e se curou! HP atual: %d/%d\n" RESET, selected_item->name, player->health, player->max_health);
-                                    // O turno termina aqui
                                     continue; 
                                     
                                 } else if (selected_item->type == ITEM_TYPE_BUFF) {
-                                    aplicar_amuleto_ferro(player, enemy);
                                     aplicar_magia_fae(player);
                                     continue; 
                                 }
                             }
-                            // Se saiu do menu (choice == 0), volta para o menu de combate.
                             continue;
                     }
                 }

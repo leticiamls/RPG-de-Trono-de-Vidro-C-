@@ -11,6 +11,10 @@
 #include "../include/narrativa.h"
 
 // ================= Voids Itens =================
+
+void narrativa_confronto_final(Character *player);
+void narrativa_confronto_ridderak(Character *player);
+
 void aplicar_magia_fae(Character *player) {
     if (player == NULL) return;
 
@@ -40,38 +44,6 @@ void aplicar_magia_fae(Character *player) {
             }
             return; 
         }
-    }
-}
-
-void aplicar_amuleto_ferro(Character *player, Character *enemy) {
-    if (player == NULL || enemy == NULL) return;
-
-    const char *item_name = "AMULETO: anulador de magia(voce bloqueara a magia inimiga)";
-    const float reducao_ataque_inimigo = 0.30f;
-    int amuleto_encontrado = 0;
-
-    for (int i = 0; i < player->inventory.count; i++) {
-        Item *item = &player->inventory.items[i];
-        
-        if (strcmp(item->name, item_name) == 0 && item->quantity > 0) {
-            amuleto_encontrado = 1;
-            break; 
-        }
-    }
-
-    if (amuleto_encontrado) {
-        int dano_original = enemy->attack;
-        
-        int reducao = (int)(dano_original * reducao_ataque_inimigo);
-        enemy->attack = dano_original - reducao;
-        
-        if (enemy->attack < 0) {
-            enemy->attack = 0; 
-        }
-
-        printf("\n\033[1;36m[AMULETO DE FERRO ATIVO]\033[0m A presenca do ferro afeta o inimigo!");
-        printf("\nO ataque de %s foi reduzido em %d (30%%). ATK Inimigo atual: %d\n", 
-               enemy->name, reducao, enemy->attack);
     }
 }
 
@@ -139,24 +111,30 @@ void handle_combat(Character *player) {
     int enemy_max_health;
     int enemy_attack;
     int enemy_defense;
-    
 
-    if (strcmp(player->class_name, "Assassina") == 0) {
-        enemy_name = "Ridderak";
-        enemy_health = 60 + (rand() % 20); // Stats aleatórios
-        enemy_attack = 10 + (rand() % 5);
-        enemy_defense = 5 + (rand() % 3);
-        enemy_max_health = enemy_health;
-    } else {
-        enemy_name = "Cain";
-        enemy_health = 70 + (rand() % 30);
-        enemy_attack = 12 + (rand() % 5);
-        enemy_defense = 6 + (rand() % 3);
-        enemy_max_health = enemy_health;
-    }
+    if (player->level == 1) { 
+    enemy_name = "Ridderak";
+    enemy_health = 60 + (rand() % 20); 
+    enemy_attack = 10 + (rand() % 5);
+    enemy_defense = 5 + (rand() % 3);
+    enemy_max_health = enemy_health;
+
+}
+else { 
+    enemy_name = "Cain";
+    enemy_health = 70 + (rand() % 30);
+    enemy_attack = 12 + (rand() % 5);
+    enemy_defense = 6 + (rand() % 3);
+    enemy_max_health = enemy_health;
+
+    aplicar_magia_fae(player); 
+}
 
     if (strcmp(enemy_name, "Cain") == 0 || strcmp(enemy_name, "Confronto Final") == 0) {
+        narrativa_confronto_final(player);
         aplicar_magia_fae(player); 
+    } else {
+        narrativa_confronto_ridderak(player);
     }
 
     Character *enemy = create_enemy(enemy_name, enemy_health, enemy_attack, enemy_defense, enemy_max_health);
@@ -165,7 +143,6 @@ void handle_combat(Character *player) {
         return;
     }
     
-    aplicar_amuleto_ferro(player, enemy);
     int resultado_batalha;
     
     // --- 2. ORQUESTRAÇÃO DO COMBATE (Loop de Retry) ---

@@ -198,10 +198,9 @@ void narrativa_mortes_repentinas(Character *player) {
         case 1:
             printf("\nVoce toca o pergaminho. Uma dor lancinante atinge voce, mas visoes de Fae, Valg e um nome antigo - **Aelin Galathynius** - inundam sua mente. Seu verdadeiro nome e poder sao despertados(Porem, para ativar seu poder, voce precisara vencer um desafio posterior).\n");
             player->attack += 5;
-            player->level++;
             g_chaol->amizade_score -= 10;
             g_dorian->amizade_score += 15;
-            printf("%s+5 Ataque, Nivel Up!%s Sua saude agora e: %s%s%d%s. %s-10 Chaol, +15 Dorian.%s\n", 
+            printf("%s+5 Ataque.%s Sua saude agora e: %s%s%d%s. %s-10 Chaol, +15 Dorian.%s\n", 
                    COR_VERDE, PADRAO, NEGRITO, COR_AZUL, player->health, PADRAO, COR_VERMELHA, PADRAO);
             break;
         case 2:
@@ -247,10 +246,10 @@ void narrativa_the_last_dance(Character *player) {
     switch (escolhasNarrativa) {
         case 1:
             printf("\nVoce pega o amuleto de ferro frio. Prioriza a tatica sobre o vinculo.\n");
-            add_item(&player->inventory, "AMULETO: anulador de magia(voce bloqueara a magia inimiga, mas nao sera capaz de utilizar a sua)", 1, 0, ITEM_TYPE_BUFF);
             player->defesa += 5;
             g_dorian->amizade_score += 5;
-            printf("%s+5 Defesa. +5 Dorian.%s\n", COR_VERDE, PADRAO);
+            player->level++;
+            printf("%s+5 Defesa. +5 Dorian. Nivel Up!%s\n", COR_VERDE, PADRAO);
             break;
         case 2:
             printf("\n%s%sCelaena:%s \"Eu sou Aelin Ashryver Galathynius, Rainha de Terrasen.\"\n", NEGRITO, COR_LARANJA, PADRAO);
@@ -262,15 +261,55 @@ void narrativa_the_last_dance(Character *player) {
             printf("\nVoce recusa o amuleto. Confia apenas em si mesma.\n");
             player->attack += 3;
             g_dorian->amizade_score -= 10;
-            printf("%s+3 Ataque. -10 Dorian (Decepcao).%s\n", COR_VERDE, PADRAO);
+            player->level++;
+            printf("%s+3 Ataque. -10 Dorian (Decepcao). Nivel Up!%s\n", COR_VERDE, PADRAO);
             break;
         default:
             printf("\nVoce acena com a cabeca e se afasta (Acao Padrao).\n");
             g_dorian->amizade_score += 5;
-            printf("%s+5 Dorian.%s\n", COR_VERDE, PADRAO);
+            player->level++;
+            printf("%s+5 Dorian.%s Nivel Up!\n", COR_VERDE, PADRAO);
             break;
     }
     printf("\n---\n");
+}
+
+void narrativa_confronto_ridderak(Character *player) {
+    printf("\n%s%s## O Desafio da Fera: Confronto contra Ridderak%s\n", NEGRITO, COR_LARANJA, PADRAO);
+    printf("\nO Capitao Chaol Westfall anuncia o proximo combate na arena de treinamento. Seu adversario e Ridderak, um gigante das terras do Norte, conhecido pela sua forca bruta e crueldade desmedida.\n");
+    
+    printf("\nRidderak ergue sua espada, tao larga quanto sua cabeca, e solta uma gargalhada rouca que ecoa na arena.\n");
+    
+    printf("\n%s%sRidderak:%s \"A Assassina de Adarlan! Pensei que seria mais alta. Voce e apenas um rato fugido de Endovier. Vou te quebrar tao facil quanto quebrei a esperanca de todos os seus 'amigos' la.\"\n", NEGRITO, COR_VERMELHA, PADRAO);
+
+    printf("\nO insulto atinge voce. A mencao de Endovier acende uma chama fria de furia em seu peito. Voce nao esta lutando pelo Rei. Voce esta lutando pela sua sobrevivencia e em memoria daqueles que voce deixou para tras.\n");
+    
+    printf("\n%sCelaena:%s \"Voce pode ter a forca, mas eu tenho a precisao. E a paciencia. Sera um prazer ver o sangue de Endovier manchar o piso desta arena.\"\n", COR_VERMELHA, PADRAO);
+    
+    printf("\nVoce assume sua postura de combate. Ridderak avanca com um rugido, confiante em sua superioridade fisica.\n");
+
+    printf("\n[FIM DA NARRATIVA. INICIO DO COMBATE CONTRA RIDDERAK]\n");
+}
+
+void narrativa_confronto_final(Character *player) {
+    printf("\n%s%s## O Confronto Final: A Queda de Cain%s\n", NEGRITO, COR_VERMELHA, PADRAO);
+    printf("\nO cenario nao e a arena, mas as catacumbas escuras sob o Castelo de Vidro. Voce e Cain estao sozinhos, iluminados apenas pela luz bruxuleante de tochas e o brilho fraco dos simbolos de Wyrd nas paredes.\n");
+
+    printf("\nCain esta transformado. Sua armadura normal foi substituida por uma pele acinzentada e escamosa, e seus olhos brilham com uma luz antinatural. A magia Valg o possuiu completamente.\n");
+
+    printf("\n%s%sCain:%s \"Voce esta aqui, Assassina. Ou devo chama-la de Aelin Galathynius? Tarde demais. Meu mestre me prometeu poder ilimitado. Sua morte sera a coroacao da nova era de Adarlan. Sinta o cheiro da magia... ela e doce, nao e?\"\n", NEGRITO, COR_MAGENTA, PADRAO);
+
+    printf("\nVoce sente o ar denso de magia escura. Este nao e um duelo de espadas; e um embate de poder.\n");
+    
+    printf("\n%s-- O Despertar da Heranca Fae --%s\n", NEGRITO, PADRAO);
+    printf("\nVoce sente uma onda de calor percorrer seu corpo. Seus atributos aumentam em resposta a magia Valg de Cain.\n");
+    printf("%s%sCelaena/Aelin:%s \"Eu nao sou sua assassina, nem serei o brinquedo do seu Rei. Eu sou a Herdeira de Terrasen, e o poder que voce rouba... eu o herdei!\"\n", NEGRITO, COR_AZUL, PADRAO);
+    
+    printf("\nVoce ergue sua arma. O medo se foi, substituido pela furia de quem perdeu tudo.\n");
+
+    printf("\n%s%sCain:%s \"Entao morra, Herdeira. Morra por Terrasen e morra pelo Rei!\"\n", NEGRITO, COR_MAGENTA, PADRAO);
+    
+    printf("\n[FIM DA NARRATIVA. INICIO DO COMBATE CONTRA CAIN]\n");
 }
 
 void handle_narrative(const char *title, Character *player) {

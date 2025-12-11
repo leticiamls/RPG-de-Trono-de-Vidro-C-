@@ -133,7 +133,7 @@ void run_game_loop() {
     }
     
     if (is_queue_empty(g_progression_queue)) {
-        printf("\n%s%sParabens! Você completou a historia de Trono de Vidro!%s\n", NEGRITO, COR_VERDE, PADRAO);
+        printf("\n%s%sParabens! Voce completou a historia de Trono de Vidro!%s\n", NEGRITO, COR_VERDE, PADRAO);
     }
 }
 

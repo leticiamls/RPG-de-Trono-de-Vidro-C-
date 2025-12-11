@@ -3,6 +3,7 @@
 
 #include "character.h"
 #include "data_structures.h"
+#include "narrativa.h"
 
 void handle_narrative(const char *title, Character *player);
 void handle_combat(Character *player);
