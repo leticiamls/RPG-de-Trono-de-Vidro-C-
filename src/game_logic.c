@@ -15,6 +15,14 @@
 void narrativa_confronto_final(Character *player);
 void narrativa_confronto_ridderak(Character *player);
 
+void limpar_tela() {
+    #ifdef _WIN32
+        system("cls"); 
+    #else
+        system("clear"); 
+    #endif
+}
+
 void aplicar_magia_fae(Character *player) {
     if (player == NULL) return;
 

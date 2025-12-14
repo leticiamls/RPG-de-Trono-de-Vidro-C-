@@ -1,7 +1,18 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c99 -Iinclude
 
-SRCS = src/main.c src/game.c src/character.c src/data_structures.c src/game_logic.c src/minigame.c src/file_handler.c
+SRCS = src/main.c \
+	   src/game.c \
+	   src/character.c \
+	   src/data_structures.c \
+	   src/game_logic.c \
+	   src/minigame.c \
+	   src/file_handler.c \
+	   src/combate.c \
+	   src/inventario.c \
+	   src/narrativa.c \
+	   src/npc.c
+
 OBJS = $(SRCS:.c=.o)
 TARGET = rpg_throne_of_glass
 

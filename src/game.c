@@ -91,11 +91,14 @@ static void setup_progression_queue() {
 }
 
 void run_game_loop() {
+    limpar_tela();
     Chapter *current_chapter;
     int choice;
 
     while (!is_queue_empty(g_progression_queue)) {
         current_chapter = dequeue_chapter(g_progression_queue);
+
+        limpar_tela();
         
         printf("\n%s=== Capitulo: %s ===%s\n", NEGRITO, current_chapter->title, PADRAO);
 

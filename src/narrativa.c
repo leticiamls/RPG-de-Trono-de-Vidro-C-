@@ -16,16 +16,39 @@
 #define COR_MAGENTA "\033[0;35m"
 #define COR_LARANJA "\033[0;33m"
 
+void print_narrative_block(const char *start_tag, const char *end_tag) {
+    FILE *file = fopen("narrativa.dat", "r");
+    if (file == NULL) {
+        perror("Erro ao abrir arquivo de narrativa");
+        return;
+    }
+
+    char line[512];
+    int reading = 0;
+
+    while (fgets(line, sizeof(line), file) != NULL) {
+        if (strstr(line, start_tag) != NULL) {
+            reading = 1;
+            continue;
+        }
+
+        if (strstr(line, end_tag) != NULL) {
+            reading = 0;
+            break;
+        }
+
+        if (reading) {
+            line[strcspn(line, "\n")] = 0;
+            printf("%s\n", line);
+        }
+    }
+
+    fclose(file);
+}
+
 void narrativa_endovier(Character *player) {
-	printf("\n%s## A Libertacao da Assassina: Das Minas de Sal ao Castelo de Vidro%s\n", COR_AZUL, PADRAO);
-	printf("\nPor dois anos, as minas de sal de Endovier foram seu inferno pessoal, e o nome Celaena Sardothien, a Assassina mais temida de Adarlan virou apenas mais uma lenda urbana...\n");
-	printf("Voce estava em um dos tuneis escuros das Minas de Sal de Endovier, pagando sua pena perpetua com uma picareta em suas maos calejadas, quando o som dos cascos se tornou inconfundivel. Nao era a patrulha usual. O passo era pesado, ordenado. Seus sentidos, amortecidos pela miseria, despertaram instantaneamente.\n");
-	printf("\nDe repente, a luz das tochas inundou o tunel, e uma figura imponente e bem-vestida parou a sua frente. Sua armadura preta refletia a chama, e seus olhos eram frios como gelo.\n");
-	printf("\nO homem nao era outro senao Chaol Westfall, o Capitao da Guarda Real do Rei de Adarlan.\n\n");
-	
+	print_narrative_block("#NARRATIVA_ENDOVER#", "#FIM_NARRATIVA_ENDOVER#");
 	int escolhasNarrativa = 0;
-	printf("*** Voce deseja:\n");
-    printf("%s1) Questionar Guarda Real; \n2) Se manter em silencio; \n3) Tentar fugir.%s\n", COR_MAGENTA, PADRAO);
     scanf("%d", &escolhasNarrativa);
     
     switch (escolhasNarrativa) {
@@ -53,49 +76,12 @@ void narrativa_endovier(Character *player) {
             printf("%s+10 de amizade com Chaol Westfall.%s Sua amizade com Chaol agora e: %s%s%d/100%s\n\n", COR_VERMELHA, PADRAO, NEGRITO, COR_AZUL, g_chaol->amizade_score, PADRAO);
             break;
     }
-	printf("Chaol faz um sinal para os guardas, que abriram o caminho para outro homem, elegantemente vestido, com um sorriso debochado no rosto: Dorian Havilliard, o Principe Herdeiro.\n");
-	printf("\n%s%sDorian:%s \"Surpresa, Celaena. Seu nome chegou aos ouvidos do meu pai, e nao da maneira que voce esperava.\"\n", NEGRITO, COR_AZUL, PADRAO);
-
-	printf("\nVoce estreitou os olhos.\n");
-
-	printf("\n%s%sCelaena:%s \"O Rei me quer morta, Principe. Eu o conheco melhor do que voce.\"\n", NEGRITO, COR_LARANJA, PADRAO);
-
-	printf("\n%s%sDorian:%s \"Ah, mas nao para a morte. Para o Torneio.\"\n", NEGRITO, COR_AZUL, PADRAO);
-
-    printf("\nA palavra a atingiu como um golpe fisico. Voce mal conseguia respirar. Torneio.\n");
-    
-    printf("\n%s%sChaol:%s \"O Rei esta patrocinando um torneio para encontrar um novo Campeao, um assassino a seu servico. Voce competira, Celaena. Se vencer, sera a Assassina do Rei e estara livre de Endovier. Mas, somente o vencedor saira vivo dessa competicao.\"\n", NEGRITO, COR_VERDE, PADRAO);
-    
-    printf("\nO Principe deu um passo a frente, a voz baixa.\n");
-    
-    printf("\n%s%sDorian:%s \"Voce tem a chance de sair daqui, Assassina. Deixe as minas de sal e venha para o Castelo de Vidro. Mas esteja avisada, sua liberdade e condicional. E a competicao e mortal.\"\n", NEGRITO, COR_AZUL, PADRAO);
-    
-    printf("\nVoce sentiu uma faisca de esperanca, um calor que nao vinha das tochas. Seria uma nova prisao, mas uma prisao de ouro, com armas e chances de vinganca.\n");
-    
-    printf("\n%s%sCelaena:%s \"Feito. Mande arrumar meus aposentos, Principe. E traga vinho. Eu bebo agua salgada ha dois anos.\"\n", NEGRITO, COR_LARANJA, PADRAO);
-    
-    printf("\nVoce ergueu o queixo, permitindo que a luz revelasse a cicatriz no seu braco. A Assassina de Adarlan estava de volta.\n");
-
-	printf("\n---\n");
-
-	printf("\n%sVoce foi transportada das minas de Endovier para o Castelo de Vidro. Seu primeiro capitulo de treinamento e sobrevivencia comeca agora.%s\n\n", NEGRITO, PADRAO);
+	print_narrative_block("#NARRATIVA_ENDOVER2#", "#FIM_NARRATIVA_ENDOVER2#");
 }
 
 void narrativa_castelo(Character *player) {
-    printf("\n%s## O Castelo de Vidro%s\n", COR_MAGENTA, PADRAO);
-    printf("\nA viagem de Endovier ao Castelo de Vidro foi rapida, mas o choque cultural foi imediato. Voce foi levada a um luxuoso quarto no anexo do castelo, uma suite digna de uma nobre, mas com guardas posicionados em cada esquina.\n");
-    printf("\nChaol Westfall a informou sobre as regras: voce e a Campea do Principe, mas esta sob sua vigilancia constante.\n");
-
-    printf("\n%s%sChaol:%s \"Ha vinte e tres competidores, todos assassinos, ladroes ou mercenarios. Cada um tem um patrono que o trouxe aquinobres, duques, e ate o Principe Rhaegar. Nao se engane, todos querem sua cabeca, Celaena.\"\n", NEGRITO, COR_VERDE, PADRAO);
-    
-    printf("\nVoce observou a cidade de Rifthold atraves da janela de vidro. A liberdade estava tao perto, mas ainda separada por camadas de mentiras e intencoes assassinas.\n");
-    
-    printf("\nDurante o jantar na ala dos competidores, voce sente a tensao. Um homem corpulento, com a insignia de um Barao no peito, te encara com puro desprezo. Ele e Cain, um dos favoritos.\n");
-    
+    print_narrative_block("#NARRATIVA_CASTELO#", "#FIM_NARRATIVA_CASTELO#");
     int escolhasCompetidores = 0;
-    printf("\n*** Voce deseja reagir a Cain:\n");
-    printf("%s1) Ignorar a provocacao e focar na refeicao; \n2) Retribuir o olhar com um sorriso intimidador; \n3) Murmurar um insulto para ser ouvido.%s\n", COR_MAGENTA, PADRAO);
-    
     scanf("%d", &escolhasCompetidores);
     printf("Acao escolhida: %d\n", escolhasCompetidores);
 
@@ -172,25 +158,8 @@ void narrativa_castelo(Character *player) {
 }
 
 void narrativa_mortes_repentinas(Character *player) {
-    printf("\n%s## Mortes Repentinas: O Misterio da Marca de Wyrd%s\n", COR_VERMELHA, PADRAO);
-    printf("\nO Torneio avanca, e voce elimina competidores com eficiencia fria. No entanto, algo esta errado. Candidatos fracos, que voce nem considerava ameaca, sao encontrados mortos em seus quartos, com os corpos drenados e uma marca estranha cravada na pele: as lendarias Marcas de Wyrd.\n");
-    
-    printf("\nA paranoia toma conta do Castelo. O Rei ordenou que Chaol dobrasse a seguranca, mas nem mesmo a Guarda Real consegue impedir o terror que se espalha.\n");
-    
-    printf("\nEm uma noite, Dorian a encontra em segredo na vastidao da Biblioteca, onde voce tem buscado respostas para a magia que o Rei jurou ter banido.\n");
-
-    printf("\n%s%sDorian:%s \"E magia negra, Celaena. Meu pai nao esta apenas patrocinando o Torneio, ele esta acobertando algo muito mais sinistro. Eu sinto isso, como um frio no meu peito.\"\n", NEGRITO, COR_AZUL, PADRAO);
-    
-    printf("\nVoce revela a Dorian que suspeita de um dos competidores mais sombrios, uma princesa chamada Nehemia que desapareceu, e ambos comecam a vasculhar a secao proibida da Biblioteca. Chaol, alertado pela ausencia de voces, irrompe na sala.\n");
-    
-    printf("\n%s%sChaol:%s \"O que voces estao fazendo aqui? Isso e loucura! Celaena, saia de perto do Principe. Eu sou responsavel pela sua seguranca, e nao vou permitir que seja envolvida com qualquer... porcaria magica que ele encontre!\"\n", NEGRITO, COR_VERDE, PADRAO);
-    
-    printf("\nNa pressa, voce derruba um volume antigo. Dele cai um pergaminho coberto de runas de Wyrd, brilhando com uma energia maligna, atraindo voce e repelindo Chaol.\n");
-
+    print_narrative_block("#NARRATIVA_MORTES_REPENTINAS#", "#FIM_NARRATIVA_MORTES_REPENTINAS#");
     int escolhasNarrativa = 0;
-    printf("\n*** A energia do pergaminho e poderosa e ameacadora. Voce deve agir:\n");
-    printf("%s1) Tocar no Pergaminho para absorver seu conhecimento (Alto Risco, Alto Ganho); \n2) Ignorar a magia e focar em acalmar a furia de Chaol; \n3) Usar Dorian como escudo, empurrando-o para a magia (Traicao de Confiança).%s\n", COR_MAGENTA, PADRAO);
-
     scanf("%d", &escolhasNarrativa);
     printf("Acao escolhida: %d\n", escolhasNarrativa);
 
@@ -231,16 +200,8 @@ void narrativa_mortes_repentinas(Character *player) {
 }
 
 void narrativa_the_last_dance(Character *player) {
-    printf("\n%s## The Last Dance: A Final Sombria e o Legado Desperto%s\n", COR_LARANJA, PADRAO);
-    printf("\nVoce esta na iminencia da Final. Apos o encontro com o espirito da Rainha Elena e de saber que voce sabe que e Aelin Galathynius, a herdeira de Terrasen, e que o Rei esta trazendo os Valg (senhores demoniacos) para Erilea.\n");
-    
-    printf("\nO Grande Salao esta repleto. Seu oponente, Cain, esta sob a influencia maligna do Wyrd, uma criatura de forca sobrenatural.\n");
-    
-    printf("\nAntes do duelo, Dorian se aproxima de voce, palido. Ele lhe entrega um pequeno amuleto de ferro frio, um material detestado pela magia.\n");
-    
+    print_narrative_block("#NARRATIVA_THE_LAST_DANCE#", "#FIM_NARRATIVA_THE_LAST_DANCE#");
     int escolhasNarrativa = 0;
-    printf("\n*** Em face da magia sombria e de sua nova identidade, voce deve escolher:\n");
-    printf("%s1) Aceitar o Amuleto e Focar na Luta; \n2) Confessar a Dorian a verdade total sobre Aelin Galathynius; \n3) Recusar o amuleto, confiando apenas em sua propria forca.%s\n", COR_MAGENTA, PADRAO);
     scanf("%d", &escolhasNarrativa);
 
     switch (escolhasNarrativa) {
@@ -275,41 +236,11 @@ void narrativa_the_last_dance(Character *player) {
 }
 
 void narrativa_confronto_ridderak(Character *player) {
-    printf("\n%s%s## O Desafio da Fera: Confronto contra Ridderak%s\n", NEGRITO, COR_LARANJA, PADRAO);
-    printf("\nO Capitao Chaol Westfall anuncia o proximo combate na arena de treinamento. Seu adversario e Ridderak, um gigante das terras do Norte, conhecido pela sua forca bruta e crueldade desmedida.\n");
-    
-    printf("\nRidderak ergue sua espada, tao larga quanto sua cabeca, e solta uma gargalhada rouca que ecoa na arena.\n");
-    
-    printf("\n%s%sRidderak:%s \"A Assassina de Adarlan! Pensei que seria mais alta. Voce e apenas um rato fugido de Endovier. Vou te quebrar tao facil quanto quebrei a esperanca de todos os seus 'amigos' la.\"\n", NEGRITO, COR_VERMELHA, PADRAO);
-
-    printf("\nO insulto atinge voce. A mencao de Endovier acende uma chama fria de furia em seu peito. Voce nao esta lutando pelo Rei. Voce esta lutando pela sua sobrevivencia e em memoria daqueles que voce deixou para tras.\n");
-    
-    printf("\n%sCelaena:%s \"Voce pode ter a forca, mas eu tenho a precisao. E a paciencia. Sera um prazer ver o sangue de Endovier manchar o piso desta arena.\"\n", COR_VERMELHA, PADRAO);
-    
-    printf("\nVoce assume sua postura de combate. Ridderak avanca com um rugido, confiante em sua superioridade fisica.\n");
-
-    printf("\n[FIM DA NARRATIVA. INICIO DO COMBATE CONTRA RIDDERAK]\n");
+    print_narrative_block("#NARRATIVA_CONFRONTO_RIDDERAK#", "#FIM_NARRATIVA_CONFRONTO_RIDDERAK#");
 }
 
 void narrativa_confronto_final(Character *player) {
-    printf("\n%s%s## O Confronto Final: A Queda de Cain%s\n", NEGRITO, COR_VERMELHA, PADRAO);
-    printf("\nO cenario nao e a arena, mas as catacumbas escuras sob o Castelo de Vidro. Voce e Cain estao sozinhos, iluminados apenas pela luz bruxuleante de tochas e o brilho fraco dos simbolos de Wyrd nas paredes.\n");
-
-    printf("\nCain esta transformado. Sua armadura normal foi substituida por uma pele acinzentada e escamosa, e seus olhos brilham com uma luz antinatural. A magia Valg o possuiu completamente.\n");
-
-    printf("\n%s%sCain:%s \"Voce esta aqui, Assassina. Ou devo chama-la de Aelin Galathynius? Tarde demais. Meu mestre me prometeu poder ilimitado. Sua morte sera a coroacao da nova era de Adarlan. Sinta o cheiro da magia... ela e doce, nao e?\"\n", NEGRITO, COR_MAGENTA, PADRAO);
-
-    printf("\nVoce sente o ar denso de magia escura. Este nao e um duelo de espadas; e um embate de poder.\n");
-    
-    printf("\n%s-- O Despertar da Heranca Fae --%s\n", NEGRITO, PADRAO);
-    printf("\nVoce sente uma onda de calor percorrer seu corpo. Seus atributos aumentam em resposta a magia Valg de Cain.\n");
-    printf("%s%sCelaena/Aelin:%s \"Eu nao sou sua assassina, nem serei o brinquedo do seu Rei. Eu sou a Herdeira de Terrasen, e o poder que voce rouba... eu o herdei!\"\n", NEGRITO, COR_AZUL, PADRAO);
-    
-    printf("\nVoce ergue sua arma. O medo se foi, substituido pela furia de quem perdeu tudo.\n");
-
-    printf("\n%s%sCain:%s \"Entao morra, Herdeira. Morra por Terrasen e morra pelo Rei!\"\n", NEGRITO, COR_MAGENTA, PADRAO);
-    
-    printf("\n[FIM DA NARRATIVA. INICIO DO COMBATE CONTRA CAIN]\n");
+    print_narrative_block("#NARRATIVA_CONFRONTO_CAIN#", "#FIM_NARRATIVA_CONFRONTO_CAIN#");
 }
 
 void handle_narrative(const char *title, Character *player) {
