@@ -64,7 +64,7 @@ Durante o jantar na ala dos competidores, voce sente a tensao. Um homem corpulen
 3) Murmurar um insulto para ser ouvido.
 #FIM_NARRATIVA_CASTELO#
 
-#NARRATIVA_MORTES#
+#NARRATIVA_MORTES_REPENTINAS#
 ## Mortes Repentinas: O Misterio da Marca de Wyrd
 
 O Torneio avanca, e voce elimina competidores com eficiencia fria. No entanto, algo esta errado. Candidatos fracos, que voce nem considerava ameaca, sao encontrados mortos em seus quartos, com os corpos drenados e uma marca estranha cravada na pele: as lendarias Marcas de Wyrd.
@@ -81,9 +81,9 @@ Na pressa, voce derruba um volume antigo. Dele cai um pergaminho coberto de runa
 1) Tocar no Pergaminho para absorver seu conhecimento (Alto Risco, Alto Ganho); 
 2) Ignorar a magia e focar em acalmar a furia de Chaol; 
 3) Usar Dorian como escudo, empurrando-o para a magia (Traicao de Confiança).
-#FIM_NARRATIVA_MORTES#
+#FIM_NARRATIVA_MORTES_REPENTINAS#
 
-#NARRATIVA_LAST_DANCE#
+#NARRATIVA_THE_LAST_DANCE#
 ## The Last Dance: A Final Sombria e o Legado Desperto
 
 Voce esta na iminencia da Final. Apos o encontro com o espirito da Rainha Elena e de saber que voce sabe que e Aelin Galathynius, a herdeira de Terrasen, e que o Rei esta trazendo os Valg (senhores demoniacos) para Erilea.
@@ -96,7 +96,7 @@ Antes do duelo, Dorian se aproxima de voce, palido. Ele lhe entrega um pequeno a
 1) Aceitar o Amuleto e Focar na Luta; 
 2) Confessar a Dorian a verdade total sobre Aelin Galathynius; 
 3) Recusar o amuleto, confiando apenas em sua propria forca.
-#FIM_NARRATIVA_LAST_DANCE#
+#FIM_NARRATIVA_THE_LAST_DANCE#
 
 #NARRATIVA_CONFRONTO_RIDDERAK#
 ## O Desafio da Fera: Confronto contra Ridderak

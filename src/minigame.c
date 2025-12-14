@@ -116,7 +116,7 @@ int jogar_rodada(Runa **baralho, int num_rodada, int *vitorias_celaena, int *vit
     int pontuacao_celaena;
     int pontuacao_npc;
     char acao;
-    int resultado = 0; // 1=Vitória Celaena, -1=Vitória NPC, 0=Empate
+    int resultado = 0; 
 
     printf("\n" NEGRITO "--------------------------- | RODADA %d | ---------------------------\n" PADRAO, num_rodada);
     printf("PLACAR: Celaena %d - %d Elena\n", *vitorias_celaena, *vitorias_npc);

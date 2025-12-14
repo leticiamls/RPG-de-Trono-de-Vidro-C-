@@ -235,11 +235,11 @@ void narrativa_the_last_dance(Character *player) {
     printf("\n---\n");
 }
 
-void narrativa_confronto_ridderak(Character *player) {
+void narrativa_confronto_ridderak() {
     print_narrative_block("#NARRATIVA_CONFRONTO_RIDDERAK#", "#FIM_NARRATIVA_CONFRONTO_RIDDERAK#");
 }
 
-void narrativa_confronto_final(Character *player) {
+void narrativa_confronto_final() {
     print_narrative_block("#NARRATIVA_CONFRONTO_CAIN#", "#FIM_NARRATIVA_CONFRONTO_CAIN#");
 }
 

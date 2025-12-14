@@ -127,8 +127,7 @@ void handle_combat(Character *player) {
     enemy_defense = 5 + (rand() % 3);
     enemy_max_health = enemy_health;
 
-}
-else { 
+} else { 
     enemy_name = "Cain";
     enemy_health = 70 + (rand() % 30);
     enemy_attack = 12 + (rand() % 5);
